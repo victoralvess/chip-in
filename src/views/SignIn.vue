@@ -2,7 +2,7 @@
   <div class="flex-1 d-flex flex-column justify-content-center align-items-center">
     <Card>
       <CardBody>
-        <form action="">
+        <form action="" class="d-flex flex-column">
           <div class="form-group">
             <Label for="username" label="Username"/>
             <Input type="text" id="username" name="username"/>
@@ -11,7 +11,7 @@
             <Label for="password" label="Password"/>
             <Input type="password" id="password" name="password"/>
           </div>
-          <Button type="submit" class="btn-primary">Sign In</Button>
+          <Button type="submit" class="btn-primary ml-auto mr-auto">Sign In</Button>
         </form>
       </CardBody>
     </Card>
