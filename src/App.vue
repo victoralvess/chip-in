@@ -1,9 +1,15 @@
 <template>
   <div id="app" class="d-flex flex-column">
-    <!--<div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>-->
+    <NavBar class="navbar-light bg-light">
+      <Button class="navbar-toggler" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="navbar-toggler-icon"></span>
+      </Button>
+      <NavBarNav>
+        <router-link to="/" class="nav-link">Home</router-link>
+        <router-link to="/dashboard" class="nav-link">Dashboard</router-link>
+        <router-link to="/about" class="nav-link">About</router-link>
+      </NavBarNav>
+    </NavBar>
     <router-view/>
   </div>
 </template>
@@ -21,14 +27,10 @@
   width: 100%;
   height: 100%;
 }
-#nav {
-  padding: 30px;
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-    &.router-link-exact-active {
-      color: #42b983;
-    }
+ 
+a {
+  &.router-link-exact-active {
+    color: green;
   }
 }
 
@@ -36,3 +38,18 @@
   flex: 1;
 }
 </style>
+
+<script>
+import 'bootstrap'
+import Button from '@/components/Button';
+import NavBar from '@/components/NavBar';
+import NavBarNav from '@/components/NavBarNav';
+
+export default {
+  components: {
+    Button,
+    NavBar,
+    NavBarNav
+  }
+}
+</script>
