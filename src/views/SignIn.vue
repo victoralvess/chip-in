@@ -19,11 +19,11 @@
 </template>
 
 <script>
-import Card from '@/components/Card'
-import CardBody from '@/components/CardBody'
-import Label from '@/components/Label'
-import Input from '@/components/Input'
-import Button from '@/components/Button'
+import Card from '@/components/atoms/Card'
+import CardBody from '@/components/atoms/CardBody'
+import Label from '@/components/atoms/Label'
+import Input from '@/components/atoms/Input'
+import Button from '@/components/atoms/Button'
 
 export default {
   name: 'sign-in',
