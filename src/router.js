@@ -4,6 +4,7 @@ import Home from './views/Home.vue'
 import About from './views/About.vue'
 import SignIn from './views/SignIn.vue'
 import Dashboard from './views/Dashboard.vue'
+import CreateGoal from './views/CreateGoal.vue'
 
 Vue.use(Router)
 
@@ -22,7 +23,12 @@ export default new Router({
     {
       path: '/dashboard',
       name: 'dashboard',
-      component: Dashboard
-    }
+      component: Dashboard,
+    },
+    {
+      path: '/dashboard/goals/create',
+      name: 'create',
+      component: CreateGoal
+    }     
   ]
 })
