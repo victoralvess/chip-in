@@ -17,6 +17,10 @@
   width: 100%;
   height: 100%;
 }
+
+#app > * {
+  height: 100%;
+}
  
 a {
   &.router-link-exact-active {
@@ -26,6 +30,10 @@ a {
 
 .flex-1 {
   flex: 1;
+}
+
+.h-100 {
+  height: 100%;
 }
 </style>
 
