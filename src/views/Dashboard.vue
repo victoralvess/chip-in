@@ -1,5 +1,6 @@
 <template>
   <div>
+    <NavigationBar/>
     <div class="jumbotron d-flex flex-column justify-content-center align-items-center">
       <img src="//via.placeholder.com/150x150">
     </div>
@@ -17,13 +18,15 @@
 </template>
 
 <script>
-import ListGroup from '@/components/ListGroup'
-import ListGroupItem from '@/components/ListGroupItem'
-import ProgressBar from '@/components/ProgressBar'
+import NavigationBar from '@/components/compounds/NavigationBar'
+import ListGroup from '@/components/atoms/ListGroup'
+import ListGroupItem from '@/components/atoms/ListGroupItem'
+import ProgressBar from '@/components/atoms/ProgressBar'
 
 export default {
   name: 'dashboard',
   components: {
+    NavigationBar,
     ListGroup,
     ListGroupItem,
     ProgressBar
