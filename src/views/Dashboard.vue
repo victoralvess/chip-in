@@ -9,7 +9,7 @@
         <ListGroupItem>
           <div>
             <a href="/goals/1">Goal 1</a>
-            <ProgressBar value="97"/>
+            <ProgressBar :value="97"/>
           </div>
         </ListGroupItem>
       </ListGroup>
