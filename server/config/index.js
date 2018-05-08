@@ -1,3 +1,4 @@
 module.exports = {
-  passport: require('./passport')
+  passport: require('./passport'),
+  mongoose: require('./mongoose')
 };
