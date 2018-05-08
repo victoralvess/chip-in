@@ -2,7 +2,7 @@
   <div class="flex-1 d-flex flex-column justify-content-center align-items-center">
     <Card>
       <CardBody>
-        <form action="" class="d-flex flex-column">
+        <form method="post" action="/authenticate"  class="d-flex flex-column">
           <div class="form-group">
             <Label for="username" label="Username"/>
             <Input type="text" id="username" name="username"/>
