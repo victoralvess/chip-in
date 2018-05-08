@@ -1,32 +1,33 @@
 const passport = require('passport');
 const {Strategy} = require('passport-local');
 
-const user = {
-  id: 'Uid19835760798',
-  username: 'admin',
-  wallet: 500.00
-};
+const User = require('../models/users');
 
 passport.serializeUser((user, done) => {
   done(null, user.id);
 });
 
 passport.deserializeUser((id, done) => {
-  done(null, user);
+  User.findById(id, (error, user) => {
+    if (error) return done(error);
+
+    delete user.password;
+
+    done(null, user);
+  });
 });
 
 passport.use(
   new Strategy(
     (username, password, done) => {
-      if (username === user.username) {
-        if (password === 'admin') {
-          done(null, user);
-        } else {
-          done(null, false, { message: 'Incorrect password.' });
-        }
-      } else {
-        done(null, false, { message: 'Incorrect username.' });
-      }
+      User.findOne({ username }, (error, user) => {
+        if (error) return done(error);
+        if (!user) return done(null, false, { message: 'Incorrect username.'});
+        if (user.password !== password) return done(null, false, { message: 'Incorrect password.' });
+        
+        const { id, username, wallet } = user;
+        done(null, { id, username, wallet });
+      });
     }
   )
 );
