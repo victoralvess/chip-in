@@ -10,10 +10,13 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser((id, done) => {
   User.findById(id, (error, user) => {
     if (error) return done(error);
-
-    delete user.password;
-
-    done(null, user);
+    
+    const dUser = {
+      id: user.id,
+      username: user.username,
+      wallet: user.wallet
+    }
+    done(null, dUser);
   });
 });
 
@@ -24,9 +27,8 @@ passport.use(
         if (error) return done(error);
         if (!user) return done(null, false, { message: 'Incorrect username.'});
         if (user.password !== password) return done(null, false, { message: 'Incorrect password.' });
-        
-        const { id, username, wallet } = user;
-        done(null, { id, username, wallet });
+
+        done(null, user);
       });
     }
   )
