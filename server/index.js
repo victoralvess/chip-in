@@ -34,7 +34,13 @@ app.post(
       if (!user) return res.status(401).send(info);
       req.login(user, (error) => {
         if (error) return next(error);
-        res.json({ id: user.id, username: user.username, wallet: user.wallet });
+        res.json({
+          user: {
+            id: user.id,
+            username: user.username,
+            wallet: user.wallet
+          }
+        });
       });
     })(req, res, next);
   }
