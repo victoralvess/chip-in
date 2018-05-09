@@ -6,6 +6,8 @@ import SignIn from './views/SignIn.vue'
 import Dashboard from './views/Dashboard.vue'
 import CreateGoal from './views/CreateGoal.vue'
 
+import { isLoggedIn } from './utils'
+
 Vue.use(Router)
 
 export default new Router({
@@ -24,11 +26,13 @@ export default new Router({
       path: '/dashboard',
       name: 'dashboard',
       component: Dashboard,
+      beforeEnter: isLoggedIn
     },
     {
       path: '/dashboard/goals/create',
       name: 'create',
-      component: CreateGoal
+      component: CreateGoal,
+      beforeEnter: isLoggedIn
     }     
   ]
 })
