@@ -2,6 +2,7 @@
   <div class="flex-1 d-flex flex-column justify-content-center align-items-center">
     <Card>
       <CardBody>
+      <div class="alert alert-danger" v-if="error">{{error}}</div>
         <form class="d-flex flex-column" @submit.prevent="signIn">
           <div class="form-group">
             <Label for="username" label="Username"/>
@@ -39,7 +40,8 @@ export default {
   data() {
     return {
       username: '',
-      password: ''
+      password: '',
+      error: null
     }
   },
   methods: {
@@ -51,11 +53,13 @@ export default {
       axios.post('/authenticate', credentials, {
         headers: { 'Content-type': 'application/json' }
       })
-        .then((response) => {
-          console.log(response)
+        .then(response => {
+          this.error = null
+          const user = JSON.stringify(response.data.user)
+          if (user) return localStorage.setItem('user', user)
         })
         .catch((error) => {
-          console.log(error)
+          this.error = error.response.data.message
         })
     }
   }
