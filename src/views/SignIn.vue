@@ -56,7 +56,8 @@ export default {
         .then(response => {
           this.error = null
           const user = JSON.stringify(response.data.user)
-          if (user) return localStorage.setItem('user', user)
+          localStorage.setItem('user', user)
+          localStorage.setItem('jwt', response.data.jwt)
         })
         .catch((error) => {
           this.error = error.response.data.message
