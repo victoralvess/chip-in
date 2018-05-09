@@ -26,7 +26,7 @@ import Label from '@/components/atoms/Label'
 import Input from '@/components/atoms/Input'
 import Button from '@/components/atoms/Button'
 
-import axios from 'axios';
+import axios from 'axios'
 
 export default {
   name: 'sign-in',
@@ -56,8 +56,11 @@ export default {
         .then(response => {
           this.error = null
           const user = JSON.stringify(response.data.user)
-          localStorage.setItem('user', user)
-          localStorage.setItem('jwt', response.data.jwt)
+          this.$store.dispatch('user', user)
+          this.$store.dispatch('jwt', response.data.jwt)
+          //localStorage.setItem('user', user)
+          //localStorage.setItem('jwt', response.data.jwt)
+          this.$router.push('dashboard')
         })
         .catch((error) => {
           this.error = error.response.data.message
