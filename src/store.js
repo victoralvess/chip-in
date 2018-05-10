@@ -22,6 +22,9 @@ export default new Vuex.Store({
     },
     saveCreateGoalForm (state, form) {
       state.createGoal.form = form
+    },
+    cleanCreateGoalForm (state) {
+      state.createGoal.form = {}
     }
   },
   actions: {
@@ -33,6 +36,9 @@ export default new Vuex.Store({
     },
     saveCreateGoalForm ({ commit }, form) {
       commit('saveCreateGoalForm', form)
+    },
+    cleanCreateGoalForm ({ commit }) {
+      commit('cleanCreateGoalForm')
     }
   },
   getters: {
