@@ -58,26 +58,45 @@ app.post(
   }
 );
 
-app.post('/v1/goals/add', (req, res) => {
-  let { title, description, goal, due } = req.body;
-  let errors = [];
-  title = removeWhiteSpace(title)
-  description = removeWhiteSpace(description);
-  goal = parseInt(goal);
+app.post(
+  '/v1/goals/add',
+  (req, res, next) => {
+    try {
+      const auth = req.headers.authorization.split(' ');
+      const token = auth[1];
 
-  if (title.length < 1) errors.push({ message: 'Please enter a valid title.' })
-  if (description.length < 1) errors.push({ message: 'Please enter a valid description.'})
-  if (goal < 1) errors.push({ message: 'Your goal have to be greater than or equal to $1.' })
-  if (
-    due.length !== 10 ||
-    due.match(/\d{4}(-\d{2}){2}/)[0] !== due ||
-    new Date(`${due}T23:59:59.999Z`).getTime() < Date.now() 
-  ) errors.push({ message: 'Please enter a valid date' })
-  
-  if (errors.length > 0) return res.status(400).json(errors)
+      if (auth[0] !== 'Bearer') return res.status(401).json([{ message: 'Token Error.' }]);
+      jwt.verify(token, process.env.JWT_SECRET, function(error, decoded) {
+        console.log(error)
+        if (error) res.status(401).json([{ message: 'Token Error.' }]);
+        next();
+      });
+    } catch (e) {
+      console.log('error')
+      res.status(401).json([{ message: 'Token Error.' }]);
+    }
+  },
+  (req, res) => {
+    let { title, description, goal, due } = req.body;
+    let errors = [];
+    title = removeWhiteSpace(title)
+    description = removeWhiteSpace(description);
+    goal = parseInt(goal);
 
-  res.status(201).json({ ok: true });
-});
+    if (title.length < 1) errors.push({ message: 'Please enter a valid title.' });
+    if (description.length < 1) errors.push({ message: 'Please enter a valid description.'});
+    if (goal < 1) errors.push({ message: 'Your goal have to be greater than or equal to $1.' });
+    if (
+      due.length !== 10 ||
+      due.match(/\d{4}(-\d{2}){2}/)[0] !== due ||
+      new Date(`${due}T23:59:59.999Z`).getTime() < Date.now() 
+    ) errors.push({ message: 'Please enter a valid date' });
+
+    if (errors.length > 0) return res.status(400).json(errors);
+
+    res.status(201).json({ ok: true });
+  }
+);
 
 function removeWhiteSpace(str) {
   return str.replace(/\s{2,}/g, ' ').trim();

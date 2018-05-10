@@ -96,7 +96,8 @@ export default {
       store.dispatch('saveCreateGoalForm', this.form)
       axios.post('/v1/goals/add', JSON.stringify(this.form), {
         headers: {
-          'Content-type': 'application/json'
+          'Content-type': 'application/json',
+          'Authorization': `Bearer ${store.getters.jwt}`
         }
       })
         .then(response => {
@@ -105,6 +106,7 @@ export default {
           this.form = { ...defaultForm }
           store.dispatch('cleanCreateGoalForm')
         }).catch(error => {
+          if (error.response.status === 401) return this.$router.push('/')
           this.errors = error.response.data
         })
     },
