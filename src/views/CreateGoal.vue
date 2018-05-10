@@ -102,6 +102,7 @@ export default {
       })
         .then(response => {
           this.feedback = 'Goal created.'
+          this.errors = []
           setTimeout(_ => this.feedback = null, 7000)
           this.form = { ...defaultForm }
           store.dispatch('cleanCreateGoalForm')
