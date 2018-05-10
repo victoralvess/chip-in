@@ -3,6 +3,8 @@ const express = require('express');
 const passport = require('passport');
 const bodyParser = require('body-parser');
 const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
+const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 
 require('./config');
@@ -16,7 +18,8 @@ app.use(session({
   cookie: {
     maxAge: 3600000,
     sameSite: true
-  }
+  },
+  //store: new MongoStore({ mongooseConnection: mongoose.connection })
 }));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -42,10 +45,9 @@ app.post(
           wallet: user.wallet
         };
         
-        const token = jwt.sign({
-          ...userData,
-          expiresIn: '1h'
-        }, process.env.JWT_SECRET);
+        const token = jwt.sign(userData, process.env.JWT_SECRET, {
+          expiresIn: '20s'
+        });
 
         res.json({
           user: userData,
