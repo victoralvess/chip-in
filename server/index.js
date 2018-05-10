@@ -46,7 +46,7 @@ app.post(
         };
         
         const token = jwt.sign(userData, process.env.JWT_SECRET, {
-          expiresIn: '20s'
+          expiresIn: '1h'
         });
 
         res.json({
@@ -65,7 +65,7 @@ app.post('/v1/goals/add', (req, res) => {
   description = removeWhiteSpace(description);
   goal = parseInt(goal);
 
-  if (title.length < 1) errors.push({ message: 'Please enter a valid goal.' })
+  if (title.length < 1) errors.push({ message: 'Please enter a valid title.' })
   if (description.length < 1) errors.push({ message: 'Please enter a valid description.'})
   if (goal < 1) errors.push({ message: 'Your goal have to be greater than or equal to $1.' })
   if (
