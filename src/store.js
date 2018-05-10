@@ -8,7 +8,10 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     user: null,
-    jwt: null
+    jwt: null,
+    createGoal: {
+      form: {}
+    }
   },
   mutations: {
     user (state, user) {
@@ -16,6 +19,9 @@ export default new Vuex.Store({
     },
     jwt (state, jwt) {
       state.jwt = jwt
+    },
+    saveCreateGoalForm (state, form) {
+      state.createGoal.form = form
     }
   },
   actions: {
@@ -24,11 +30,15 @@ export default new Vuex.Store({
     },
     jwt ({ commit }, jwt) {
       commit('jwt', jwt)
+    },
+    saveCreateGoalForm ({ commit }, form) {
+      commit('saveCreateGoalForm', form)
     }
   },
   getters: {
     user: state => state.user,
-    jwt: state => state.jwt
+    jwt: state => state.jwt,
+    createGoalForm: state => state.createGoal.form
   },
   plugins: [createPersistedState({
     storage: {
