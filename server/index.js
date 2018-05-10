@@ -58,6 +58,31 @@ app.post(
   }
 );
 
+app.post('/v1/goals/add', (req, res) => {
+  let { title, description, goal, due } = req.body;
+  let errors = [];
+  title = removeWhiteSpace(title)
+  description = removeWhiteSpace(description);
+  goal = parseInt(goal);
+
+  if (title.length < 1) errors.push({ message: 'Please enter a valid goal.' })
+  if (description.length < 1) errors.push({ message: 'Please enter a valid description.'})
+  if (goal < 1) errors.push({ message: 'Your goal have to be greater than or equal to $1.' })
+  if (
+    due.length !== 10 ||
+    due.match(/\d{4}(-\d{2}){2}/)[0] !== due ||
+    new Date(`${due}T23:59:59.999Z`).getTime() < Date.now() 
+  ) errors.push({ message: 'Please enter a valid date' })
+  
+  if (errors.length > 0) return res.status(400).json(errors)
+
+  res.status(201).json({ ok: true });
+});
+
+function removeWhiteSpace(str) {
+  return str.replace(/\s{2,}/g, ' ').trim();
+}
+
 app.listen(8080, () => {
   console.log('Server running at: http://localhost:8080');
 });
