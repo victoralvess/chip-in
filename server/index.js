@@ -3,11 +3,12 @@ const express = require('express');
 const passport = require('passport');
 const bodyParser = require('body-parser');
 const session = require('express-session');
-const MongoStore = require('connect-mongo')(session);
-const mongoose = require('mongoose');
+//const MongoStore = require('connect-mongo')(session);
+//const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 
 require('./config');
+const Goal = require('./models/goal');
 
 const app = express();
 app.use(express.static('dist'));
@@ -67,8 +68,8 @@ app.post(
 
       if (auth[0] !== 'Bearer') return res.status(401).json([{ message: 'Token Error.' }]);
       jwt.verify(token, process.env.JWT_SECRET, function(error, decoded) {
-        console.log(error)
         if (error) res.status(401).json([{ message: 'Token Error.' }]);
+        req.user_jwt = decoded;
         next();
       });
     } catch (e) {
@@ -78,6 +79,7 @@ app.post(
   },
   (req, res) => {
     let { title, description, goal, due } = req.body;
+    let due_date = new Date(`${due}T23:59:59.999Z`);
     let errors = [];
     title = removeWhiteSpace(title)
     description = removeWhiteSpace(description);
@@ -89,12 +91,23 @@ app.post(
     if (
       due.length !== 10 ||
       due.match(/\d{4}(-\d{2}){2}/)[0] !== due ||
-      new Date(`${due}T23:59:59.999Z`).getTime() < Date.now() 
+      due_date.getTime() < Date.now() 
     ) errors.push({ message: 'Please enter a valid date' });
 
     if (errors.length > 0) return res.status(400).json(errors);
-
-    res.status(201).json({ ok: true });
+    
+    Goal.create({
+      title,
+      description,
+      goal,
+      due: due_date,
+      uid: req.user_jwt.id
+    })
+      .then(_ => res.status(201).json({ ok: true }))
+      .catch(e => {
+        console.log(e)
+        res.status(400).json([{ message: 'Something went wrong.' }])
+      });
   }
 );
 
