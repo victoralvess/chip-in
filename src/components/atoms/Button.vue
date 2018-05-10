@@ -1,9 +1,14 @@
 <template>
-  <button class="btn"><slot/></button>
+  <button class="btn" @click="!!click && click()"><slot/></button>
 </template>
 
 <script>
 export default {
-  name: 'Button'
+  name: 'Button',
+  props: {
+    click: {
+      default: false
+    }
+  }
 }
 </script>
