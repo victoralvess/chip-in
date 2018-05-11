@@ -5,12 +5,14 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 //const MongoStore = require('connect-mongo')(session);
 //const mongoose = require('mongoose');
+const compression = require('compression');
 const jwt = require('jsonwebtoken');
 
 require('./config');
 const Goal = require('./models/goal');
 
 const app = express();
+app.use(compression());
 app.use(express.static('dist'));
 app.use(session({
   secret: process.env.SESSION_SECRET,
