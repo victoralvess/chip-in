@@ -39,7 +39,6 @@
               <Button type="submit" class="btn-primary">Create Goal</Button>
             </div>
           </form>
-          {{form}}
         </CardBody>
       </Card>
     </div>
@@ -86,6 +85,7 @@ export default {
   },
   created() {
     this.form = {
+      ...defaultForm,
       ...this.$store.getters.createGoalForm
     }
   },
