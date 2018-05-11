@@ -1,12 +1,12 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from './views/Home.vue'
-import About from './views/About.vue'
-import SignIn from './views/SignIn.vue'
-import Dashboard from './views/Dashboard.vue'
-import CreateGoal from './views/CreateGoal.vue'
-
 import { isLoggedIn } from './utils'
+
+const Home = () => import('./views/Home.vue')
+const About = () => import('./views/About.vue')
+const SignIn = () => import('./views/SignIn.vue')
+const Dashboard = () => import('./views/Dashboard.vue')
+const CreateGoal = () => import('./views/CreateGoal.vue')
 
 Vue.use(Router)
 
