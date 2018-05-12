@@ -10,11 +10,11 @@
           {{user.username}} | ${{user.wallet}}
         </CardBody>
       </Card>
-      <ListGroup>
-        <ListGroupItem>
+      <ListGroup v-if="goals">
+        <ListGroupItem v-for="goal of goals" :key="goal.id">
           <div>
-            <a href="/goals/1">Goal 1</a>
-            <ProgressBar :value="97"/>
+            <router-link :to="'/goals/' + goal.id">{{goal.title}}</router-link>
+            <ProgressBar :value="goal.progress"/>
           </div>
         </ListGroupItem>
       </ListGroup>
@@ -30,6 +30,8 @@ import ProgressBar from '@/components/atoms/ProgressBar'
 import Card from '@/components/atoms/Card'
 import CardBody from '@/components/atoms/CardBody'
 
+import axios from 'axios'
+
 export default {
   name: 'dashboard',
   components: {
@@ -42,11 +44,30 @@ export default {
   },
   data () {
     return {
-      user: null
+      user: null,
+      goals: null,
     }
   },
-  created () {
+  async created () {
     this.user = this.$store.getters.user
+    const jwt = this.$store.getters.jwt
+    try {
+      const response = await axios.get(`/v1/users/${this.user.id}/goals`, {
+        headers: {
+          'Authorization': `Bearer ${jwt}`
+        }
+      })
+      const goals = response.data
+      this.goals = goals.map(goal => {
+        return {
+          ...goal,
+          id: goal._id,
+          progress: goal.earned * 100 / goal.goal
+        }
+      })
+    } catch (error) {
+      this.$router.push('/')
+    }
   }
 }
 </script>
