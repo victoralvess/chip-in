@@ -11,6 +11,8 @@ const jwt = require('jsonwebtoken');
 require('./config');
 const Goal = require('./models/goal');
 
+const verifyToken = require('./utils/verifyToken');
+
 const app = express();
 app.use(compression());
 app.use(express.static('dist'));
@@ -61,24 +63,21 @@ app.post(
   }
 );
 
+app.get('/v1/users/:id/goals/', verifyToken, (req, res) => {
+  const uid = req.params.id;
+  const user = req.user;
+  if (!user) return res.status(401).end();
+
+  if ((uid !== user.id) || (uid !== req.user_jwt.id)) return res.status(403).end();
+  Goal.find().where({ uid }).exec((error, goals) => {
+    if (error) return res.status(404).end();
+    res.status(200).json(goals);
+  });
+});
+
 app.post(
   '/v1/goals/add',
-  (req, res, next) => {
-    try {
-      const auth = req.headers.authorization.split(' ');
-      const token = auth[1];
-
-      if (auth[0] !== 'Bearer') return res.status(401).json([{ message: 'Token Error.' }]);
-      jwt.verify(token, process.env.JWT_SECRET, function(error, decoded) {
-        if (error) res.status(401).json([{ message: 'Token Error.' }]);
-        req.user_jwt = decoded;
-        next();
-      });
-    } catch (e) {
-      console.log('error')
-      res.status(401).json([{ message: 'Token Error.' }]);
-    }
-  },
+  verifyToken,
   (req, res) => {
     let { title, description, goal, due } = req.body;
     let due_date = new Date(`${due}T23:59:59.999Z`);
