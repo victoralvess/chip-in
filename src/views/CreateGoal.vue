@@ -90,26 +90,27 @@ export default {
     }
   },
   methods: {
-    createGoal() {
+    async createGoal() {
       const store = this.$store
 
       store.dispatch('saveCreateGoalForm', this.form)
-      axios.post('/v1/goals/add', JSON.stringify(this.form), {
-        headers: {
-          'Content-type': 'application/json',
-          'Authorization': `Bearer ${store.getters.jwt}`
-        }
-      })
-        .then(response => {
-          this.feedback = 'Goal created.'
-          this.errors = []
-          setTimeout(_ => this.feedback = null, 7000)
-          this.form = { ...defaultForm }
-          store.dispatch('cleanCreateGoalForm')
-        }).catch(error => {
-          if (error.response.status === 401) return this.$router.push('/')
-          this.errors = error.response.data
+      try {
+        const response = await axios.post('/v1/goals/add', JSON.stringify(this.form), {
+          headers: {
+            'Content-type': 'application/json',
+            'Authorization': `Bearer ${store.getters.jwt}`
+          }
         })
+
+        this.feedback = 'Goal created.'
+        this.errors = []
+        setTimeout(_ => this.feedback = null, 7000)
+        this.form = { ...defaultForm }
+        store.dispatch('cleanCreateGoalForm')
+      } catch(error) {
+        if (error.response.status === 401) return this.$router.push('/')
+        this.errors = error.response.data
+      }
     },
     clean() {
       this.form = { ...defaultForm }
