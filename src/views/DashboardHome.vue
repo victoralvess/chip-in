@@ -1,6 +1,5 @@
 <template>
-  <div>
-    <NavigationBar/>
+  <div>  
     <div class="jumbotron d-flex flex-column justify-content-center align-items-center">
       <img src="//via.placeholder.com/150x150">
     </div>
@@ -23,7 +22,6 @@
 </template>
 
 <script>
-import NavigationBar from '@/components/compounds/NavigationBar'
 import ListGroup from '@/components/atoms/ListGroup'
 import ListGroupItem from '@/components/atoms/ListGroupItem'
 import ProgressBar from '@/components/atoms/ProgressBar'
@@ -35,7 +33,6 @@ import axios from 'axios'
 export default {
   name: 'dashboard',
   components: {
-    NavigationBar,
     ListGroup,
     ListGroupItem,
     ProgressBar,
