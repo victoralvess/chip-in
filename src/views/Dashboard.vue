@@ -1,7 +1,16 @@
 <template>
-  <router-view name="dashboard"></router-view>
+  <div>
+    <NavigationBar />
+    <router-view name="dashboard"></router-view>
+  </div>
 </template>
 
 <script>
-export default {}
+import NavigationBar from '@/components/compounds/NavigationBar.vue'
+
+export default {
+  components: {
+    NavigationBar
+  }
+}
 </script>
