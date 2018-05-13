@@ -7,7 +7,6 @@ module.exports = (req, res, next) => {
 
     if (auth[0] !== 'Bearer') return res.status(401).json([{ message: 'Token Error.' }]);
     jwt.verify(token, process.env.JWT_SECRET, function(error, decoded) {
-      console.log('1', error)
       if (error) res.status(401).json([{ message: 'Token Error.' }]);
       req.user_jwt = decoded;
       next();
