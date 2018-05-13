@@ -4,7 +4,7 @@ const passport = require('passport');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 //const MongoStore = require('connect-mongo')(session);
-//const mongoose = require('mongoose');
+const mongoose = require('mongoose');
 const compression = require('compression');
 const jwt = require('jsonwebtoken');
 
@@ -12,6 +12,7 @@ require('./config');
 const Goal = require('./models/goal');
 
 const verifyToken = require('./utils/verifyToken');
+const verifyUser = require('./utils/verifyUser');
 
 const app = express();
 app.use(compression());
@@ -63,15 +64,19 @@ app.post(
   }
 );
 
-app.get('/v1/users/:id/goals/', verifyToken, (req, res) => {
-  const uid = req.params.id;
-  const user = req.user;
-  if (!user) return res.status(401).end();
-
-  if ((uid !== user.id) || (uid !== req.user_jwt.id)) return res.status(403).end();
-  Goal.find().where({ uid }).exec((error, goals) => {
+app.get('/v1/users/:uid/goals/', verifyToken, verifyUser, (req, res) => {
+   const { uid } = req.params;
+   Goal.find().where({ uid }).exec((error, goals) => {
     if (error) return res.status(404).end();
     res.status(200).json(goals);
+  });
+});
+
+app.get('/v1/users/:uid/goals/:id', verifyToken, verifyUser, (req, res) => {
+  const { uid, id } = req.params;
+  Goal.findById(id).where({ uid }).exec((error, goal) => {
+    if (error || !goal) return res.status(404).end();
+    res.status(200).json(goal);
   });
 });
 
