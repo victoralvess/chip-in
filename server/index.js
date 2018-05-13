@@ -10,6 +10,7 @@ const jwt = require('jsonwebtoken');
 
 require('./config');
 const Goal = require('./models/goal');
+const User = require('./models/user');
 
 const verifyToken = require('./utils/verifyToken');
 const verifyUser = require('./utils/verifyUser');
@@ -36,6 +37,23 @@ app.get('/hello', (req, res) => {
   res.send(req.user);
 });
 
+const generateUserDataAndJwt = (user) => { 
+  const userData = {
+    id: user.id,
+    username: user.username,
+    wallet: user.wallet
+  };
+
+  const token = jwt.sign(userData, process.env.JWT_SECRET, {
+    expiresIn: '1h'
+  });
+
+  return {
+    user: userData,
+    jwt: token
+  };
+};
+
 app.post(
   '/authenticate',
   (req, res, next) => {
@@ -45,20 +63,7 @@ app.post(
       req.login(user, (error) => {
         if (error) return next(error);
 
-        const userData = {
-          id: user.id,
-          username: user.username,
-          wallet: user.wallet
-        };
-        
-        const token = jwt.sign(userData, process.env.JWT_SECRET, {
-          expiresIn: '1h'
-        });
-
-        res.json({
-          user: userData,
-          jwt: token
-        });
+        res.json(generateUserDataAndJwt(user))
       });
     })(req, res, next);
   }
@@ -68,6 +73,7 @@ app.get('/v1/users/:uid/goals/', verifyToken, verifyUser, (req, res) => {
    const { uid } = req.params;
    Goal.find().where({ uid }).exec((error, goals) => {
     if (error) return res.status(404).end();
+    
     res.status(200).json(goals);
   });
 });
@@ -116,6 +122,43 @@ app.post(
       });
   }
 );
+
+app.patch('/v1/users/:id', verifyToken, (req, res) => {
+  const patch = req.body[0];
+  const id = req.params.id;
+
+  if (patch.op === 'update_wallet' && patch.field === 'wallet') {
+    User.findById(id, (error, user) => {
+      if (error || !user) return res.status(404).end();
+      try {
+        user.wallet = user.wallet + parseFloat(patch.value);
+        user.save((error, user) => {
+          if (error) return res.status(404).end();
+          res.status(200).json(generateUserDataAndJwt(user));
+        });
+      } catch (e) {
+        return res.status(404).end();
+      }
+    });
+  }
+  
+});
+
+app.patch('/v1/goals/:id', verifyToken, (req, res) => {
+  const patch = req.body[0];
+  const id = req.params.id;
+
+  if (patch.op === 'update' && patch.field === 'is_open' && patch.value === false) {
+    Goal.findById(id, (error, goal) => {
+      if (error || !goal) return res.status(404).end();
+      goal.is_open = patch.value;
+      goal.save((error, goal) => {
+        if (error) return res.status(404).end();
+        res.status(200).json(goal);
+      });
+    });
+  }
+});
 
 function removeWhiteSpace(str) {
   return str.replace(/\s{2,}/g, ' ').trim();
