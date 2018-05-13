@@ -65,7 +65,7 @@ const defaultForm = {
 }
 
 export default {
-  name: 'about',
+  name: 'create',
   components: {
     NavigationBar,
     Card,
