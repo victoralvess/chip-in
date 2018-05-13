@@ -6,7 +6,9 @@ const Home = () => import('./views/Home.vue')
 const About = () => import('./views/About.vue')
 const SignIn = () => import('./views/SignIn.vue')
 const Dashboard = () => import('./views/Dashboard.vue')
+const DashboardHome = () => import('./views/DashboardHome.vue')
 const CreateGoal = () => import('./views/CreateGoal.vue')
+const Goal = () => import('./views/Goal.vue')
 
 Vue.use(Router)
 
@@ -26,13 +28,28 @@ export default new Router({
       path: '/dashboard',
       name: 'dashboard',
       component: Dashboard,
-      beforeEnter: isLoggedIn
-    },
-    {
-      path: '/dashboard/goals/create',
-      name: 'create',
-      component: CreateGoal,
-      beforeEnter: isLoggedIn
-    }     
+      beforeEnter: isLoggedIn,
+      children: [
+        {
+          path: '',
+          components: {
+            dashboard: DashboardHome
+          }
+        },
+        {
+          path: 'goals/create',
+          components: {
+            dashboard: CreateGoal
+          }
+        },
+        {
+          path: 'goals/:id',
+          name: 'goal',
+          components: {
+            dashboard: Goal
+          }
+        }
+      ]
+    }
   ]
 })
