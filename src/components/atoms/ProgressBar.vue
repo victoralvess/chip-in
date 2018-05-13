@@ -1,6 +1,7 @@
 <template>
   <div class="progress">
     <div class="progress-bar" :style="{ width: value + '%' }">
+      <slot />
     </div>
   </div>
 </template>
