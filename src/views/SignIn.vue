@@ -57,7 +57,7 @@ export default {
           this.error = null
           this.$store.dispatch('user', response.data.user)
           this.$store.dispatch('jwt', response.data.jwt)
-          this.$router.push('dashboard')
+          this.$router.push('/dashboard/')
         })
         .catch((error) => {
           this.error = error.response.data.message
