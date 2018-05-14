@@ -4,11 +4,12 @@
       <img src="//via.placeholder.com/150x150">
     </div>
     <div class="container d-flex flex-column">
-      <Card>
+      <!--<Card>
         <CardBody>
           {{user.username}} | ${{user.wallet}}
         </CardBody>
-      </Card>
+      </Card> -->
+      <LinePlaceholder v-if="!goals" :times="5" />
       <ListGroup v-if="goals">
         <ListGroupItem v-for="goal of goals" :key="goal.id">
           <div>
@@ -27,6 +28,7 @@ import ListGroupItem from '@/components/atoms/ListGroupItem'
 import ProgressBar from '@/components/atoms/ProgressBar'
 import Card from '@/components/atoms/Card'
 import CardBody from '@/components/atoms/CardBody'
+import LinePlaceholder from '@/components/atoms/LinePlaceholder'
 
 import axios from 'axios'
 
@@ -37,7 +39,8 @@ export default {
     ListGroupItem,
     ProgressBar,
     Card,
-    CardBody
+    CardBody,
+    LinePlaceholder
   },
   data () {
     return {
