@@ -1,6 +1,5 @@
 <template>
   <div> 
-    <NavigationBar/>
     <div class="h-100 container d-flex justify-content-center align-items-center">
       <Card class="flex-1">
         <CardBody>
@@ -46,7 +45,6 @@
 </template>
 
 <script>
-import NavigationBar from '@/components/compounds/NavigationBar'
 import Card from '@/components/atoms/Card'
 import CardBody from '@/components/atoms/CardBody'
 import Label from '@/components/atoms/Label'
