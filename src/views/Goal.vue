@@ -1,17 +1,25 @@
 <template>
-  <div v-if="goal" class="container goal-container">
-    <h1>{{goal.title}}</h1>
-    <p>{{goal.description}}</p>
-    <ProgressBar :value="goal.progress">{{goal.earned}} / {{goal.goal}}</ProgressBar>
-    <div class="d-flex justify-content-between">
-      <span>{{goal.due.substr(0, 10)}}</span>
-      <span>
-        <b>{{goal.is_open ? 'Open' : 'Closed'}}</b>
-      </span>
+  <div class="container goal-container">
+    <div v-if="!goal"> 
+      <LinePlaceholder :times="4" />
+      <div class="d-flex justify-content-end">
+        <ButtonPlaceholder />
+      </div>
     </div>
-    <div class="d-flex justify-content-end">
-      <Button class="btn-danger m-40" :click="closeGoal" v-if="goal.is_open">Close</Button>
-  </div>
+    <div v-if="goal">
+      <h1>{{goal.title}}</h1>
+      <p>{{goal.description}}</p>
+      <ProgressBar :value="goal.progress">{{goal.earned}} / {{goal.goal}}</ProgressBar>
+      <div class="d-flex justify-content-between">
+        <span>{{goal.due.substr(0, 10)}}</span>
+        <span>
+          <b>{{goal.is_open ? 'Open' : 'Closed'}}</b>
+        </span>
+      </div>
+      <div class="d-flex justify-content-end">
+        <Button class="btn-danger m-40" :click="closeGoal" v-if="goal.is_open">Close</Button>
+      </div>
+    </div>
 </template>
 
 <style scoped>
@@ -24,6 +32,8 @@
 <script>
 import ProgressBar from '@/components/atoms/ProgressBar'
 import Button from '@/components/atoms/Button'
+import LinePlaceholder from '@/components/atoms/LinePlaceholder'
+import ButtonPlaceholder from '@/components/atoms/ButtonPlaceholder'
 
 import axios from 'axios'
 
@@ -31,7 +41,9 @@ export default {
   name: 'goal',
   components: {
     ProgressBar,
-    Button
+    Button,
+    LinePlaceholder,
+    ButtonPlaceholder
   },
   data() {
     return {
