@@ -69,36 +69,50 @@ app.post(
   }
 );
 
-app.get('/v1/users/:uid/goals/', verifyToken, verifyUser, (req, res) => {
-   const { uid } = req.params;
-   Goal.find().where({ uid }).exec((error, goals) => {
-    if (error) return res.status(404).end();
+app.get('/v1/users/:uid/goals/', verifyToken, verifyUser, async (req, res) => {
+  const { uid } = req.params;
+  
+  try {
+    const goals = await Goal.find().where({ uid });
     
-    res.status(200).json(goals);
-  });
+    if (!goals.length) throw "Not Found.";
+
+    return res.status(200).json(goals);
+  } catch (error) {
+    return res.status(404).end();
+  }
+
 });
 
-app.get('/v1/users/:uid/goals/:id', verifyToken, verifyUser, (req, res) => {
+app.get('/v1/users/:uid/goals/:id', verifyToken, verifyUser, async (req, res) => {
   const { uid, id } = req.params;
-  Goal.findById(id).where({ uid }).exec((error, goal) => {
-    if (error || !goal) return res.status(404).end();
-    res.status(200).json(goal);
-  });
+  
+  try {
+    const goal = await Goal.findById(id).where({ uid });
+    
+    if (!goal) throw "Not Found."
+  
+    res.status(200).json(goal);    
+  } catch (error) {
+    res.status(404).end();
+  }
 });
 
 app.post(
   '/v1/goals/add',
   verifyToken,
-  (req, res) => {
+  async (req, res) => {
     let { title, description, goal, due } = req.body;
     let due_date = new Date(`${due}T23:59:59.999Z`);
+    
     let errors = [];
-    title = removeWhiteSpace(title)
+
+    title = removeWhiteSpace(title);
     description = removeWhiteSpace(description);
     goal = parseInt(goal);
 
-    if (title.length < 1) errors.push({ message: 'Please enter a valid title.' });
-    if (description.length < 1) errors.push({ message: 'Please enter a valid description.'});
+    if (!title.length) errors.push({ message: 'Please enter a valid title.' });
+    if (!description.length) errors.push({ message: 'Please enter a valid description.'});
     if (goal < 1) errors.push({ message: 'Your goal have to be greater than or equal to $1.' });
     if (
       due.length !== 10 ||
@@ -106,57 +120,71 @@ app.post(
       due_date.getTime() < Date.now() 
     ) errors.push({ message: 'Please enter a valid date' });
 
-    if (errors.length > 0) return res.status(400).json(errors);
-    
-    Goal.create({
-      title,
-      description,
-      goal,
-      due: due_date,
-      uid: req.user_jwt.id
-    })
-      .then(_ => res.status(201).json({ ok: true }))
-      .catch(e => {
-        console.log(e)
-        res.status(400).json([{ message: 'Something went wrong.' }])
-      });
-  }
-);
+    if (errors.length) return res.status(400).json(errors);
 
-app.patch('/v1/users/:id', verifyToken, (req, res) => {
+    try {
+      await Goal.create({
+        title,
+        description,
+        goal,
+        due: due_date,
+        uid: req.user_jwt.id
+      });
+
+      return res.status(201).json({ ok: true });
+    } catch (e) {
+      res.status(400).json([{ message: 'Something went wrong.' }])
+    }
+  });
+
+app.patch('/v1/users/:id', verifyToken, async (req, res) => {
   const patch = req.body[0];
   const id = req.params.id;
+ 
+  let user = null;
 
   if (patch.op === 'update_wallet' && patch.field === 'wallet') {
-    User.findById(id, (error, user) => {
-      if (error || !user) return res.status(404).end();
-      try {
-        user.wallet = user.wallet + parseFloat(patch.value);
-        user.save((error, user) => {
-          if (error) return res.status(404).end();
-          res.status(200).json(generateUserDataAndJwt(user));
-        });
-      } catch (e) {
-        return res.status(404).end();
-      }
-    });
-  }
-  
+    try {
+      user = await User.findById(id);
+
+      if (!user) throw "Not found.";
+    } catch (error) {
+      return res.status(404).send("User not found.");
+    }
+     
+    try {
+      user.wallet = user.wallet + parseFloat(patch.value);
+      const u = await user.save();
+      
+      if (!u) throw "Error";
+
+      res.status(200).json(generateUserDataAndJwt(user));
+    } catch (error) {
+      return res.status(404).send("Error on patch.");
+    }
+  };
 });
 
-app.patch('/v1/goals/:id', verifyToken, (req, res) => {
+app.patch('/v1/goals/:id', verifyToken, async (req, res) => {
   const patch = req.body[0];
   const id = req.params.id;
+ 
+  let goal = null;
 
   if (patch.op === 'update' && patch.field === 'is_open' && patch.value === false) {
-    Goal.findById(id, (error, goal) => {
-      if (error || !goal) return res.status(404).end();
+    try {
+      goal = await Goal.findById(id);
+
+      if (!goal) throw "Error";
+
       goal.is_open = patch.value;
-      goal.save((error, goal) => {
-        if (error) return res.status(404).end();
-        res.status(200).json(goal);
-      });
-    });
+
+      const g = await goal.save();
+
+      res.status(200).json(goal);
+    } catch (error) {
+      res.status(400).end();
+    }
   }
 });
 
