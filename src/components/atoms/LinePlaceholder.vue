@@ -1,10 +1,8 @@
 <template>
-  <div>
-    <div v-for="n in times">
-      <div class="line-placeholder"></div>
-      <div class="line-placeholder line-placeholder--large last"></div>
-    </div>
-  </div>
+  <Placeholder :times="times">
+    <div class="line-placeholder"></div>
+    <div class="line-placeholder line-placeholder--large last"></div>
+  </Placeholder>
 </template>
 
 <style lang="scss" scoped>
@@ -20,26 +18,15 @@
     height: 15px;
   }
 }
-
-.last {
-  margin-bottom: 20px;
-}
-
-@keyframes pulse {
-    0% {
-        background-color: rgba(165, 165, 165, 0.1)
-    }
-    50% {
-        background-color: rgba(165, 165, 165, 0.3)
-    }
-    100% {
-        background-color: rgba(165, 165, 165, 0.1)
-    }
-}
 </style>
 
 <script>
+import Placeholder from '@/components/atoms/Placeholder'
+
 export default {
+  components: {
+    Placeholder
+  },
   props: {
     times: {
       type: Number,
