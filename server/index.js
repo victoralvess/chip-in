@@ -80,7 +80,7 @@ app.post(
   }
 );
 
-app.get('/v1/goals', verifyToken, async (req, res) => {
+app.get('/v1/goals', async (req, res) => {
   try {
     const goals = await Goal.find();
     const g = goals.map(goal => goal.formatted);
@@ -173,10 +173,15 @@ app.post('/v1/goals/:id/contribute', verifyToken, async (req, res) => {
   } catch (e) {
     return res.status(404).json({ message: 'Goal or User not found.' });
   }
-  
+
+ 
   if (goal.is_open && !isNaN(value)) {
-    goal.earned += value
-    user.wallet -= value;
+    const contrib = parseFloat(value);
+    
+    if (contrib <= 0) return res.end();
+
+    goal.earned += contrib;
+    user.wallet -= contrib;
 
     if (user.wallet >= 0) {
       try {
