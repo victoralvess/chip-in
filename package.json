@@ -24,6 +24,8 @@
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
     "popper.js": "^1.14.3",
+    "pusher": "^2.0.0",
+    "pusher-js": "^4.2.2",
     "register-service-worker": "^1.0.0",
     "vue": "^2.5.16",
     "vue-router": "^3.0.1",
