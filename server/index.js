@@ -3,17 +3,26 @@ const express = require('express');
 const passport = require('passport');
 const bodyParser = require('body-parser');
 const session = require('express-session');
-//const MongoStore = require('connect-mongo')(session);
-const mongoose = require('mongoose');
+const MongoStore = require('connect-mongo')(session);
 const compression = require('compression');
 const jwt = require('jsonwebtoken');
+const Pusher = require('pusher');
 
-require('./config');
+const { mongoose, passport: unsed } = require('./config');
 const Goal = require('./models/goal');
 const User = require('./models/user');
 
 const verifyToken = require('./utils/verifyToken');
 const verifyUser = require('./utils/verifyUser');
+
+const pusher = new Pusher({
+  appId: process.env.PUSHER_APP_ID,
+  key: process.env.PUSHER_APP_KEY,
+  secret: process.env.PUSHER_APP_SECRET,
+  host: 'api.pusherapp.com',
+  encrypted: true
+});
+const CHANNEL_NAME = 'chip-in';
 
 const app = express();
 app.use(compression());
@@ -26,7 +35,7 @@ app.use(session({
     maxAge: 3600000,
     sameSite: true
   },
-  //store: new MongoStore({ mongooseConnection: mongoose.connection })
+  store: new MongoStore({ mongooseConnection: mongoose.connection })
 }));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -34,7 +43,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.get('/hello', (req, res) => {
-  res.send(req.user);
+  res.send('hello');
 });
 
 const generateUserDataAndJwt = (user) => { 
@@ -77,7 +86,9 @@ app.get('/v1/users/:uid/goals/', verifyToken, verifyUser, async (req, res) => {
     
     if (!goals.length) throw "Not Found.";
 
-    return res.status(200).json(goals);
+    const g = goals.map(goal => goal.formatted)
+    
+    return res.status(200).json(g);
   } catch (error) {
     return res.status(404).end();
   }
@@ -92,7 +103,7 @@ app.get('/v1/users/:uid/goals/:id', verifyToken, verifyUser, async (req, res) =>
     
     if (!goal) throw "Not Found."
   
-    res.status(200).json(goal);    
+    res.status(200).json(goal.formatted);
   } catch (error) {
     res.status(404).end();
   }
@@ -137,61 +148,49 @@ app.post(
     }
   });
 
-app.patch('/v1/users/:id', verifyToken, async (req, res) => {
-  const patch = req.body[0];
-  const id = req.params.id;
- 
+app.post('/v1/goals/:id/contribute', async (req, res) => {
+  let goal = null;
   let user = null;
 
-  if (patch.op === 'update_wallet' && patch.field === 'wallet') {
-    try {
-      user = await User.findById(id);
+  const { id } = req.params;
+  const { uid, value } = req.body;
+  
+  try {
+    goal = await Goal.findById(id);
+    user = await User.findById(uid);
+  } catch (e) {
+    return res.status(404).end();
+  }
+  
+  if (goal.is_open && !isNaN(value)) {
+    goal.earned += value
+    user.wallet -= value;
 
-      if (!user) throw "Not found.";
-    } catch (error) {
-      return res.status(404).send("User not found.");
-    }
-     
-    try {
-      user.wallet = user.wallet + parseFloat(patch.value);
-      const u = await user.save();
-      
-      if (!u) throw "Error";
+    if (user.wallet >= 0) {
+      try {
+        await user.save();
+        await goal.save();
 
-      res.status(200).json(generateUserDataAndJwt(user));
-    } catch (error) {
-      return res.status(404).send("Error on patch.");
-    }
-  };
-});
+        pusher.trigger(CHANNEL_NAME, 'collaboration', {
+          goal: goal.formatted,
+          ...generateUserDataAndJwt(user)
+        });
 
-app.patch('/v1/goals/:id', verifyToken, async (req, res) => {
-  const patch = req.body[0];
-  const id = req.params.id;
- 
-  let goal = null;
-
-  if (patch.op === 'update' && patch.field === 'is_open' && patch.value === false) {
-    try {
-      goal = await Goal.findById(id);
-
-      if (!goal) throw "Error";
-
-      goal.is_open = patch.value;
-
-      const g = await goal.save();
-
-      res.status(200).json(goal);
-    } catch (error) {
-      res.status(400).end();
+        return res.send();
+      } catch (e) {
+        console.log(e);
+        return res.status(400).end();
+      }
     }
   }
+
+  res.status(400).end();
 });
 
 function removeWhiteSpace(str) {
   return str.replace(/\s{2,}/g, ' ').trim();
 }
 
-app.listen(8080, () => {
-  console.log('Server running at: http://localhost:8080');
+app.listen(4000, () => {
+  console.log(`Server running at: http://localhost:4000`);
 });
