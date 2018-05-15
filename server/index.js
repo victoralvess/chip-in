@@ -24,6 +24,7 @@ const pusher = new Pusher({
 });
 const CHANNEL_NAME = 'chip-in';
 const COLLABORATION_EVENT = 'collaboration';
+const ACHIEVE_EVENT = 'achieve';
 
 const app = express();
 app.use(compression());
@@ -78,6 +79,16 @@ app.post(
     })(req, res, next);
   }
 );
+
+app.get('/v1/goals', verifyToken, async (req, res) => {
+  try {
+    const goals = await Goal.find();
+    const g = goals.map(goal => goal.formatted);
+    return res.status(200).json(g);
+  } catch (e) {
+    res.status(500).json({ message: 'Something went wrong.' });
+  }
+});
 
 app.get('/v1/users/:uid/goals/', verifyToken, verifyUser, async (req, res) => {
   const { uid } = req.params;
@@ -149,7 +160,7 @@ app.post(
     }
   });
 
-app.post('/v1/goals/:id/contribute', async (req, res) => {
+app.post('/v1/goals/:id/contribute', verifyToken, async (req, res) => {
   let goal = null;
   let user = null;
 
@@ -177,16 +188,60 @@ app.post('/v1/goals/:id/contribute', async (req, res) => {
           ...generateUserDataAndJwt(user)
         });
 
-        return res.send();
+        return res.end();
       } catch (e) {
-        return res.status(400).end({ message: "Error on update user's wallet or goal's earned money" });
+        return res.status(400).end({ message: "Error on update user's wallet or goal's earned money." });
       }
     } else {
-      return res.status(400).json({ message: `${user.username} has not enough money.` })
+      return res.status(400).json({ message: `${user.username} doesn't have enough money.` })
     }
   }
 
   res.status(400).json({ message: 'Invalid request.' });
+});
+
+app.post('/v1/goals/:id/achieve', verifyToken, async (req, res) => {
+  let goal = null;
+  let user = null;
+  let { user_jwt } = req;
+
+  const { id } = req.params;
+
+  try {
+    goal = await Goal.findById(id)
+  } catch (e) {
+    return res.status(404).json({ message: 'Goal not found.' })
+  }
+  
+  if (user_jwt.id != goal.uid) {
+    return res.status(401).json({ message: `${user.username} doesn't have permission to close this goal` });
+  }
+
+  try {
+    user = await User.findById(user_jwt.id)
+  } catch (e) {
+    return res.status(404).json({ message: 'User not found.' });
+  }
+  
+  const wallet = user.wallet;
+  try {
+    goal.is_open = false;
+    user.wallet += goal.earned;
+    await goal.save();
+    await user.save();
+  } catch (e) {
+    goal.is_open = true;
+    user.wallet = wallet;
+    await goal.save();
+    await user.save();
+    return res.status(500).json({ message: 'Something went wrong.' });
+  }
+
+  pusher.trigger(CHANNEL_NAME, ACHIEVE_EVENT, {
+    goal: goal.formatted
+  });
+
+  res.end();
 });
 
 function removeWhiteSpace(str) {
