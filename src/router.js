@@ -26,12 +26,12 @@ export default new Router({
     },
     {
       path: '/dashboard',
-      name: 'dashboard',
       component: Dashboard,
       beforeEnter: isLoggedIn,
       children: [
         {
           path: '',
+          name: 'dashboard',
           components: {
             dashboard: DashboardHome
           }
