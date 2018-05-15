@@ -3,7 +3,28 @@ import Vuex from 'vuex'
 import * as Cookies from 'js-cookie'
 import createPersistedState from 'vuex-persistedstate'
 
+import Pusher from 'pusher-js'
+
 Vue.use(Vuex)
+
+const PUSHER_APP_KEY = '588c3e31412e021da7a4'
+const WS_HOST = 'ws.pusherapp.com'
+const HTTP_HOST = 'sockjs.pusher.com'
+const ENCRYPTED = true
+const CLUSTER = 'mt1'
+
+const CHANNEL_NAME = 'chip-in'
+const COLLABORATION_EVENT = 'collaboration'
+const ACHIEVE_EVENT = 'achieve'
+
+const pusher = new Pusher(PUSHER_APP_KEY, {
+  wsHost: WS_HOST,
+  httpHost: HTTP_HOST,
+  encrypted: ENCRYPTED,
+  cluster: CLUSTER
+})
+
+const channel = pusher.subscribe(CHANNEL_NAME)
 
 export default new Vuex.Store({
   state: {
@@ -44,7 +65,13 @@ export default new Vuex.Store({
   getters: {
     user: state => state.user,
     jwt: state => state.jwt,
-    createGoalForm: state => state.createGoal.form
+    createGoalForm: state => state.createGoal.form,
+    pusher: _ => pusher,
+    channel: _ => channel,
+    events: _ => ({
+      ACHIEVE_EVENT,
+      COLLABORATION_EVENT,
+    })
   },
   plugins: [createPersistedState({
     storage: {
