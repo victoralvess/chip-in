@@ -16,10 +16,11 @@
           <b>{{goal.is_open ? 'Open' : 'Closed'}}</b>
         </span>
       </div>
-      <div class="d-flex justify-content-end">
+      <div class="d-flex justify-content-end" v-if="goal.uid === uid">
         <Button class="btn-danger m-40" :click="closeGoal" v-if="goal.is_open">Close</Button>
       </div>
     </div>
+  </div>
 </template>
 
 <style scoped>
@@ -56,56 +57,46 @@ export default {
     const user = this.$store.getters.user
     this.uid = user.id
     this.id = this.$route.params.id
+
+    const channel = this.$store.getters.channel
+    const { ACHIEVE_EVENT, COLLABORATION_EVENT } = this.$store.getters.events
+    channel.unbind()
+    
+    channel.bind(ACHIEVE_EVENT, data => {
+      this.goal = data.goal
+    });
+
+    channel.bind(COLLABORATION_EVENT, data => {
+      const { goal, user, jwt } = data
+      this.goal = goal
+      const { dispatch } = this.$store
+      dispatch('user', user)
+      dispatch('jwt', jwt)
+    })
+    
     try {
       const response = await axios.get(`/v1/users/${this.uid}/goals/${this.id}`, {
         headers: {
           'Authorization': `Bearer ${this.$store.getters.jwt}`
         }
       })
-      const goal = response.data
-      this.setGoal(goal)
-
+      this.goal = response.data
     } catch (error) {
       if (error.response.status === 404) return this.$router.push('/404')
       this.$router.push('/')
     }
   },
   methods: {
-    setGoal (goal) {
-      this.goal = {
-        ...goal,
-        progress: goal.earned / goal.goal * 100
-      }
-    },
     async closeGoal() {
       try {
-        const userPatchResponse = await axios.patch(`/v1/users/${this.uid}`, [{
-          op: 'update_wallet',
-          field: 'wallet',
-          value: this.goal.earned
-        }], {
+        await axios.post(`/v1/goals/${this.id}/achieve`, {}, {
           headers: {
             'Authorization': `Bearer ${this.$store.getters.jwt}`
           }
         })
-        const user = userPatchResponse.data
-        this.$store.dispatch('user', user.user)
-        this.$store.dispatch('jwt', user.jwt)
-
-        const goalPatchResponse = await axios.patch(`/v1/goals/${this.id}`, [{
-          op: 'update',
-          field: 'is_open',
-          value: false
-        }], {
-          headers: {
-            'Authorization': `Bearer ${this.$store.getters.jwt}`
-          }
-        })
-
-        const goal = goalPatchResponse.data
-        this.setGoal(goal)
       } catch (error) {
         console.log(error)
+        console.log(error.response)
       }
     }
   }
