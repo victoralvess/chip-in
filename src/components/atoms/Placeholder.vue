@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-for="n in times">
-      <slot/>
+      <slot></slot>
     </div>
   </div>
 </template>

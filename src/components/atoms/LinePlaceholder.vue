@@ -1,7 +1,9 @@
 <template>
   <Placeholder :times="times">
-    <div class="line-placeholder"></div>
-    <div class="line-placeholder line-placeholder--large last"></div>
+    <template slot-scope="placeholder">
+      <div class="line-placeholder"></div>
+      <div class="line-placeholder line-placeholder--large last"></div>
+    </template>
   </Placeholder>
 </template>
 
