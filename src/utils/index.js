@@ -16,6 +16,6 @@ export function isLoggedIn (to, from, next) {
   if (verifyLoggedIn()) {
     next()
   } else {
-    next('/')
+    next('/sign-in')
   }
 }
