@@ -45,23 +45,28 @@ export default {
     }
   },
   methods: {
-    signIn() {
-      const credentials = JSON.stringify({
+    async signIn() {
+      const credentials = {
         username: this.username,
         password: this.password
-      })
-      axios.post('/authenticate', credentials, {
-        headers: { 'Content-type': 'application/json' }
-      })
-        .then(response => {
-          this.error = null
-          this.$store.dispatch('user', response.data.user)
-          this.$store.dispatch('jwt', response.data.jwt)
-          this.$router.push('/dashboard/')
+      }
+      
+      try {
+        const response = await axios.post('/authenticate', credentials, {
+          headers: { 'Content-type': 'application/json' }
         })
-        .catch((error) => {
+        
+        this.error = null
+
+        this.$store.dispatch('user', response.data.user)
+        this.$store.dispatch('jwt', response.data.jwt)
+
+        this.$router.push('/dashboard/')
+      } catch (error) {
+        if (error.response.data.message) {
           this.error = error.response.data.message
-        })
+        }
+      }
     }
   }
 }
