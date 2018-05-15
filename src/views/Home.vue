@@ -1,18 +1,42 @@
 <template>
-  <div class="home">
-    <img src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div>
+    <NavigationBar />
+
+    <div class="container mt-40">
+      <GoalsList :placeholders="15" :goals="goals"/>
+    </div>
   </div>
 </template>
 
+<style scoped>
+.mt-40 {
+  margin-top: 40px;
+}
+</style>
+
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+import GoalsList from '@/components/compounds/GoalsList'
+import NavigationBar from '@/components/compounds/NavigationBar'
+
+import axios from 'axios'
 
 export default {
   name: 'home',
   components: {
-    HelloWorld
+    GoalsList,
+    NavigationBar
+  },
+  data () {
+    return {
+      goals: null
+    }
+  },
+  async created () {
+    try {
+      const response = await axios.get('/v1/goals')
+
+      this.goals = response.data
+    } catch (error) {}
   }
 }
 </script>
