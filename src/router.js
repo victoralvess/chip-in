@@ -17,6 +17,11 @@ export default new Router({
     {
       path: '/',
       name: 'home',
+      component: Home
+    },
+    {
+      path: '/sign-in',
+      name: 'sign-in',
       component: SignIn
     },
     {
@@ -38,6 +43,7 @@ export default new Router({
         },
         {
           path: 'goals/create',
+          name: 'create',
           components: {
             dashboard: CreateGoal
           }
