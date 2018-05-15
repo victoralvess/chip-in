@@ -23,6 +23,7 @@ const pusher = new Pusher({
   encrypted: true
 });
 const CHANNEL_NAME = 'chip-in';
+const COLLABORATION_EVENT = 'collaboration';
 
 const app = express();
 app.use(compression());
@@ -159,7 +160,7 @@ app.post('/v1/goals/:id/contribute', async (req, res) => {
     goal = await Goal.findById(id);
     user = await User.findById(uid);
   } catch (e) {
-    return res.status(404).end();
+    return res.status(404).json({ message: 'Goal or User not found.' });
   }
   
   if (goal.is_open && !isNaN(value)) {
@@ -171,20 +172,21 @@ app.post('/v1/goals/:id/contribute', async (req, res) => {
         await user.save();
         await goal.save();
 
-        pusher.trigger(CHANNEL_NAME, 'collaboration', {
+        pusher.trigger(CHANNEL_NAME, COLLABORATION_EVENT, {
           goal: goal.formatted,
           ...generateUserDataAndJwt(user)
         });
 
         return res.send();
       } catch (e) {
-        console.log(e);
-        return res.status(400).end();
+        return res.status(400).end({ message: "Error on update user's wallet or goal's earned money" });
       }
+    } else {
+      return res.status(400).json({ message: `${user.username} has not enough money.` })
     }
   }
 
-  res.status(400).end();
+  res.status(400).json({ message: 'Invalid request.' });
 });
 
 function removeWhiteSpace(str) {
