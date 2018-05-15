@@ -34,4 +34,24 @@ const schema = new Schema({
   }
 });
 
+class Goal {
+  get id () {
+    return this._id;
+  }
+
+  get progress () {
+    return this.earned * 100 / this.goal;
+  }
+
+  get formatted () {
+    return {
+      ...this._doc,
+      id: this.id,
+      progress: this.progress
+    };
+  }
+}
+
+schema.loadClass(Goal);
+
 module.exports = mongoose.model('goal', schema);
