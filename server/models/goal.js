@@ -47,7 +47,8 @@ class Goal {
     return {
       ...this._doc,
       id: this.id,
-      progress: this.progress
+      progress: this.progress,
+      expired: new Date(this.due).getTime() < new Date().getTime()
     };
   }
 }
