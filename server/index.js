@@ -25,6 +25,7 @@ const pusher = new Pusher({
 const CHANNEL_NAME = 'chip-in';
 const COLLABORATION_EVENT = 'collaboration';
 const ACHIEVE_EVENT = 'achieve';
+const CREATED_EVENT = 'created';
 
 const app = express();
 app.use(compression());
@@ -96,7 +97,7 @@ app.get('/v1/users/:uid/goals/', verifyToken, verifyUser, async (req, res) => {
   try {
     const goals = await Goal.find().where({ uid });
     
-    if (!goals.length) throw "Not Found.";
+    if (!goals.length) return res.status(200).json([]);
 
     const g = goals.map(goal => goal.formatted)
     
@@ -107,11 +108,11 @@ app.get('/v1/users/:uid/goals/', verifyToken, verifyUser, async (req, res) => {
 
 });
 
-app.get('/v1/users/:uid/goals/:id', verifyToken, verifyUser, async (req, res) => {
-  const { uid, id } = req.params;
+app.get('/v1/goals/:id', verifyToken, async (req, res) => {
+  const { id } = req.params;
   
   try {
-    const goal = await Goal.findById(id).where({ uid });
+    const goal = await Goal.findById(id);
     
     if (!goal) throw "Not Found."
   
@@ -146,12 +147,16 @@ app.post(
     if (errors.length) return res.status(400).json(errors);
 
     try {
-      await Goal.create({
+      const created = await Goal.create({
         title,
         description,
         goal,
         due: due_date,
         uid: req.user_jwt.id
+      });
+
+      pusher.trigger(CHANNEL_NAME, CREATED_EVENT, {
+        goal: created.formatted
       });
 
       return res.status(201).json({ ok: true });
@@ -166,43 +171,44 @@ app.post('/v1/goals/:id/contribute', verifyToken, async (req, res) => {
 
   const { id } = req.params;
   const { uid, value } = req.body;
-  
+
+  if (isNaN(value) || value < 0) return res.status(400).json({ message: 'Contribution value is invalid.' });
+
   try {
-    goal = await Goal.findById(id);
     user = await User.findById(uid);
-  } catch (e) {
-    return res.status(404).json({ message: 'Goal or User not found.' });
+  } catch (error) {
+    return res.status(404).json({ message: 'User not found.' });
   }
 
+  if (user.wallet < value) return res.status(400).json({ message: 'User has no enough money.' });
+
+  try {
+    goal = await Goal.findOneAndUpdate(
+      { _id: id, is_open: true, due: { $gte: new Date() } },
+      { $inc: { earned: value } },
+      { new: true }
+    );
+
+    if (!goal) throw "Error";
+  } catch (error) {
+    return res.status(400).json({ message: 'Goal not found or achieved.' });
+  }
+
+  try {
+    user.wallet += value;
+    await user.save();
+  } catch (error) {
+    goal.earned -= value;
+    await goal.save();
+    return res.status(400).json({ message: "Error on update user's wallet" });
+  }
+
+  pusher.trigger(CHANNEL_NAME, COLLABORATION_EVENT, {
+    goal: goal.formatted,
+    ...generateUserDataAndJwt(user)
+  });
  
-  if (goal.is_open && !isNaN(value)) {
-    const contrib = parseFloat(value);
-    
-    if (contrib <= 0) return res.end();
-
-    goal.earned += contrib;
-    user.wallet -= contrib;
-
-    if (user.wallet >= 0) {
-      try {
-        await user.save();
-        await goal.save();
-
-        pusher.trigger(CHANNEL_NAME, COLLABORATION_EVENT, {
-          goal: goal.formatted,
-          ...generateUserDataAndJwt(user)
-        });
-
-        return res.end();
-      } catch (e) {
-        return res.status(400).end({ message: "Error on update user's wallet or goal's earned money." });
-      }
-    } else {
-      return res.status(400).json({ message: `${user.username} doesn't have enough money.` })
-    }
-  }
-
-  res.status(400).json({ message: 'Invalid request.' });
+  return res.end();
 });
 
 app.post('/v1/goals/:id/achieve', verifyToken, async (req, res) => {
@@ -213,32 +219,34 @@ app.post('/v1/goals/:id/achieve', verifyToken, async (req, res) => {
   const { id } = req.params;
 
   try {
-    goal = await Goal.findById(id)
+    user = await User.findById(user_jwt.id);
+  } catch (error) {
+    return res.status(404).json({ message: 'User not found.' });
+  }
+
+  try {
+    goal = await Goal.findByIdAndUpdate(
+      id,
+      { is_open: false },
+      { new: true }
+    );
+
+    if (!goal) throw "Error";
+
   } catch (e) {
     return res.status(404).json({ message: 'Goal not found.' })
   }
   
-  if (user_jwt.id != goal.uid) {
+  if (user.id != goal.uid) {
     return res.status(401).json({ message: `${user.username} doesn't have permission to close this goal` });
   }
-
-  try {
-    user = await User.findById(user_jwt.id)
-  } catch (e) {
-    return res.status(404).json({ message: 'User not found.' });
-  }
   
-  const wallet = user.wallet;
   try {
-    goal.is_open = false;
     user.wallet += goal.earned;
-    await goal.save();
     await user.save();
   } catch (e) {
     goal.is_open = true;
-    user.wallet = wallet;
     await goal.save();
-    await user.save();
     return res.status(500).json({ message: 'Something went wrong.' });
   }
 
