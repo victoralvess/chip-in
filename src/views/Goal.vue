@@ -19,7 +19,7 @@
       <div class="d-flex justify-content-end" v-if="goal.uid === uid">
         <Button class="btn-danger mt-40" :click="closeGoal" v-if="goal.is_open">Close</Button>
       </div>
-      <form @submit.prevent="contribute" v-else-if="goal.is_open">
+      <form @submit.prevent="contribute" v-else-if="goal.is_open && !goal.expired">
         <div class="form-group mt-40">
           <Label for="value" label="Contribution value" />
           <Input type="number" name="value" id="value" min="0" :max="user.wallet" v-model.number="value"/>
@@ -73,7 +73,7 @@ export default {
 
     const channel = this.$store.getters.channel
     const { ACHIEVE_EVENT, COLLABORATION_EVENT } = this.$store.getters.events
-    channel.unbind()
+    // channel.unbind()
     
     channel.bind(ACHIEVE_EVENT, data => {
       this.goal = data.goal
@@ -90,7 +90,7 @@ export default {
     })
     
     try {
-      const response = await axios.get(`/v1/users/${this.uid}/goals/${this.id}`, {
+      const response = await axios.get(`/v1/goals/${this.id}`, {
         headers: {
           'Authorization': `Bearer ${this.$store.getters.jwt}`
         }
