@@ -195,7 +195,7 @@ app.post('/v1/goals/:id/contribute', verifyToken, async (req, res) => {
   }
 
   try {
-    user.wallet += value;
+    user.wallet -= value;
     await user.save();
   } catch (error) {
     goal.earned -= value;
@@ -238,6 +238,8 @@ app.post('/v1/goals/:id/achieve', verifyToken, async (req, res) => {
   }
   
   if (user.id != goal.uid) {
+    goal.is_open = true;
+    await goal.save();
     return res.status(401).json({ message: `${user.username} doesn't have permission to close this goal` });
   }
   
