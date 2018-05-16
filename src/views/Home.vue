@@ -37,6 +37,14 @@ export default {
 
       this.goals = response.data
     } catch (error) {}
+
+    const channel = this.$store.getters.channel
+    const { CREATED_EVENT } = this.$store.getters.events
+
+    // channel.unbind();
+    channel.bind(CREATED_EVENT, ({ goal }) => {
+      this.goals.push(goal)
+    })    
   }
 }
 </script>

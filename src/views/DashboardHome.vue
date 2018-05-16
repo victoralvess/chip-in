@@ -36,8 +36,8 @@ export default {
   },
   async created () {
     const channel = this.$store.getters.channel
-    const { COLLABORATION_EVENT } = this.$store.getters.events
-    channel.unbind()
+    const { COLLABORATION_EVENT, CREATED_EVENT } = this.$store.getters.events
+    // channel.unbind()
     channel.bind(COLLABORATION_EVENT, data => {
       const { goal, user, jwt } = data
       const { id } = goal
@@ -51,6 +51,10 @@ export default {
       
       this.$store.dispatch('user', user)
       this.$store.dispatch('jwt', jwt)
+    })
+
+    channel.bind(CREATED_EVENT, ({ goal }) => {
+      this.goals.push(goal)
     })
     
     this.user = this.$store.getters.user

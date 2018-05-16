@@ -16,6 +16,7 @@ const CLUSTER = 'mt1'
 const CHANNEL_NAME = 'chip-in'
 const COLLABORATION_EVENT = 'collaboration'
 const ACHIEVE_EVENT = 'achieve'
+const CREATED_EVENT = 'created'
 
 const pusher = new Pusher(PUSHER_APP_KEY, {
   wsHost: WS_HOST,
@@ -71,6 +72,7 @@ export default new Vuex.Store({
     events: _ => ({
       ACHIEVE_EVENT,
       COLLABORATION_EVENT,
+      CREATED_EVENT
     })
   },
   plugins: [createPersistedState({
