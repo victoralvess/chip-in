@@ -3,29 +3,37 @@
     <Button class="navbar-toggler" data-toggle="collapse" data-target=".navbar-collapse">
       <span class="navbar-toggler-icon"></span>
     </Button>
-    <NavBarNav>
+    <NavBarNav v-if="isLoggedIn">
       <div class="nav-item">
         <router-link to="/" class="nav-link">Home</router-link>
       </div>
-      <div class="nav-item dropdown" v-if="isLoggedIn">
-        <a href="" class="nav-link dropdown-toggle" data-toggle="dropdown">Dashboard</a>
-        <div class="dropdown-menu">
-          <router-link to="/dashboard" class="dropdown-item">General View</router-link>
-          <router-link to="/dashboard/goals/create" class="dropdown-item">Create a Goal</router-link>
-        </div>
+      <div class="nav-item">
+        <router-link to="/dashboard" class="nav-link">Dashboard</router-link>
       </div>
-      <div class="nav-item" v-if="isLoggedIn">
+      <div class="nav-item">
+        <router-link to="/dashboard/goals/create" class="nav-link">Create a Goal</router-link>
+      </div>
+      <div class="nav-item">
         <router-link to="/about" class="nav-link">About</router-link>
       </div>
-      <div class="nav-item" v-if="!isLoggedIn">
-        <router-link to="/sign-in">Sign In</router-link>
-      </div>
-      <div class="nav-item" v-else>
+      <div class="nav-item">
         <router-link to="/sign-out">Sign Out</router-link>
+      </div>
+    </NavBarNav>
+    <NavBarNav v-else>
+      <div class="nav-item">
+        <router-link to="/" class="nav-link">Home</router-link>
+      </div>
+      <div class="nav-item">
+        <router-link to="/sign-in">Sign In</router-link>
       </div>
     </NavBarNav>
   </NavBar>
 </template>
+
+<style scoped>
+@import "../styles/css/navigation.css";
+</style>
 
 <script>
 import Button from '@/components/atoms/Button'
