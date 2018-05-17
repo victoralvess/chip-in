@@ -63,31 +63,20 @@ export default {
       goal: null,
       uid: null,
       user: null,
-      value: 0
+      value: 0,
+      channel: null
     }
   },
-  async created() {
+  async mounted() {
     this.user = this.$store.getters.user
     this.uid = this.user.id
     this.id = this.$route.params.id
 
-    const channel = this.$store.getters.channel
+    this.channel = this.$store.getters.channel
     const { ACHIEVE_EVENT, COLLABORATION_EVENT } = this.$store.getters.events
-    // channel.unbind()
-    
-    channel.bind(ACHIEVE_EVENT, data => {
-      this.goal = data.goal
-    });
-
-    channel.bind(COLLABORATION_EVENT, data => {
-      const { goal, user, jwt } = data
-      this.goal = goal
-      this.user = user
-      this.value = 0
-      const { dispatch } = this.$store
-      dispatch('user', user)
-      dispatch('jwt', jwt)
-    })
+  
+    this.channel.bind(ACHIEVE_EVENT, this.pusherHandler)
+    this.channel.bind(COLLABORATION_EVENT, this.pusherHandler)
     
     try {
       const response = await axios.get(`/v1/goals/${this.id}`, {
@@ -97,11 +86,19 @@ export default {
       })
       this.goal = response.data
     } catch (error) {
-      if (error.response.status === 404) return this.$router.push('/404')
+      const { status } = error.response
+      if (status === 404) return this.$router.push('/404')
+      else if (status === 401) return this.$router.push('/sign-in')
       this.$router.push('/')
     }
   },
+  beforeDestroy() {
+    this.channel.unbind();
+  },
   methods: {
+    pusherHandler ({ goal }) {
+      this.goal = goal
+    },
     async closeGoal() {
       try {
         await axios.post(`/v1/goals/${this.id}/achieve`, {}, {
@@ -110,8 +107,13 @@ export default {
           }
         })
       } catch (error) {
-        console.log(error)
-        console.log(error.response)
+        const { status } = error.response
+        const { $router: r } = this;
+        
+        if (status === 401) return r.push('/sign-in')
+        else if (status == 404) return r.push('/404')
+
+        r.push('/')
       }
     },
     async contribute() {
@@ -135,9 +137,17 @@ export default {
           }
       })
 
-        console.log(response)
+        const { user, jwt: newJwt } = response.data
+        this.user = user
+
+        const { dispatch } = this.$store
+        dispatch('user', user)
+        dispatch('jwt', newJwt)
     } catch (e) {
-      console.log('error', e)
+      const { status } = e.response
+
+      if (status === 401) return this.$router.push('/sign-in')
+
       this.goal = {
         ...this.goal,
         earned: originalEarned,

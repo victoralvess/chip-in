@@ -32,29 +32,34 @@ export default {
     return {
       user: null,
       goals: null,
+      channel: null
     }
   },
-  async created () {
-    const channel = this.$store.getters.channel
+  async mounted () {
+    this.channel = this.$store.getters.channel
     const { COLLABORATION_EVENT, CREATED_EVENT } = this.$store.getters.events
-    // channel.unbind()
-    channel.bind(COLLABORATION_EVENT, data => {
-      const { goal, user, jwt } = data
+
+    this.channel.bind(COLLABORATION_EVENT, ({ goal }) => {
       const { id } = goal
 
-      const index = this.goals.findIndex(g => g.id === id)
-      this.goals = [
-        ...this.goals.slice(0, index),
-        goal,
-        ...this.goals.slice(index + 1)
-      ]
-      
-      this.$store.dispatch('user', user)
-      this.$store.dispatch('jwt', jwt)
+      if (this.goals && this.goals.length) {
+        const index = this.goals.findIndex(g => g.id === id)
+        this.goals = [
+          ...this.goals.slice(0, index),
+          goal,
+          ...this.goals.slice(index + 1)
+        ]
+      } else {
+        this.goals = [ ...goal ]
+      }
     })
 
-    channel.bind(CREATED_EVENT, ({ goal }) => {
-      this.goals.push(goal)
+    this.channel.bind(CREATED_EVENT, ({ goal }) => {
+      if (this.goals && this.goals.length) {
+        this.goals.push(goal)
+      } else {
+        this.goals = [ ...goal ]
+      }
     })
     
     this.user = this.$store.getters.user
@@ -70,8 +75,13 @@ export default {
       const goals = response.data
       this.goals = goals
     } catch (error) {
+      const { status } = error.response
+      if (status === 401 || status === 403) return this.$router.push('/sign-in')
       this.$router.push('/')
     }
+  },
+  beforeDestroy () {
+    this.channel.unbind()
   }
 }
 </script>

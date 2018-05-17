@@ -3,7 +3,7 @@
     <NavigationBar />
 
     <div class="container mt-40">
-      <GoalsList :placeholders="15" :goals="goals"/>
+      <GoalsList :placeholders="12" :goals="goals"/>
     </div>
   </div>
 </template>
@@ -28,7 +28,8 @@ export default {
   },
   data () {
     return {
-      goals: null
+      goals: null,
+      channel: null
     }
   },
   async created () {
@@ -36,15 +37,27 @@ export default {
       const response = await axios.get('/v1/goals')
 
       this.goals = response.data
-    } catch (error) {}
-
-    const channel = this.$store.getters.channel
+    } catch (error) {
+      return this.$router.push('/404')
+    }
+  },
+  async mounted () {
+    this.channel = this.$store.getters.channel
     const { CREATED_EVENT } = this.$store.getters.events
 
-    // channel.unbind();
-    channel.bind(CREATED_EVENT, ({ goal }) => {
-      this.goals.push(goal)
+    this.channel.bind(CREATED_EVENT, ({ goal }) => {
+      if (this.goals && this.goals.length)
+        this.goals.push(goal)
+      else
+        this.goals = [ ...goal ]
     })    
+  },
+  beforeDestroy () {
+    this.channel.unbind()
+  },
+  destroyed () {
+    this.goals = null
+    this.channel = null
   }
 }
 </script>
