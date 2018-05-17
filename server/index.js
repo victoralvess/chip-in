@@ -49,6 +49,12 @@ app.get('/hello', (req, res) => {
   res.send('hello');
 });
 
+const ensureLoggedIn = (req, res, next) => {
+  const { user } = req;
+  if (user) return next();
+  return res.status(401).end();
+};
+
 const generateUserDataAndJwt = (user) => { 
   const userData = {
     id: user.id,
@@ -56,10 +62,12 @@ const generateUserDataAndJwt = (user) => {
     wallet: user.wallet
   };
 
-  const token = jwt.sign(userData, process.env.JWT_SECRET, {
+  const token = jwt.sign({
+    ...userData,
+    exp: new Date(Date.now() + 60 * 60 * 1000).getTime() / 1000
+  }, process.env.JWT_SECRET, /*{
     expiresIn: '1h'
-  });
-
+  }*/);
   return {
     user: userData,
     jwt: token
@@ -91,7 +99,7 @@ app.get('/v1/goals', async (req, res) => {
   }
 });
 
-app.get('/v1/users/:uid/goals/', verifyToken, verifyUser, async (req, res) => {
+app.get('/v1/users/:uid/goals/', ensureLoggedIn, verifyToken, verifyUser, async (req, res) => {
   const { uid } = req.params;
   
   try {
@@ -108,7 +116,7 @@ app.get('/v1/users/:uid/goals/', verifyToken, verifyUser, async (req, res) => {
 
 });
 
-app.get('/v1/goals/:id', verifyToken, async (req, res) => {
+app.get('/v1/goals/:id', ensureLoggedIn, verifyToken, async (req, res) => {
   const { id } = req.params;
   
   try {
@@ -124,6 +132,7 @@ app.get('/v1/goals/:id', verifyToken, async (req, res) => {
 
 app.post(
   '/v1/goals/add',
+  ensureLoggedIn,
   verifyToken,
   async (req, res) => {
     let { title, description, goal, due } = req.body;
@@ -165,7 +174,7 @@ app.post(
     }
   });
 
-app.post('/v1/goals/:id/contribute', verifyToken, async (req, res) => {
+app.post('/v1/goals/:id/contribute', ensureLoggedIn, verifyToken, async (req, res) => {
   let goal = null;
   let user = null;
 
@@ -205,13 +214,13 @@ app.post('/v1/goals/:id/contribute', verifyToken, async (req, res) => {
 
   pusher.trigger(CHANNEL_NAME, COLLABORATION_EVENT, {
     goal: goal.formatted,
-    ...generateUserDataAndJwt(user)
+    // ...generateUserDataAndJwt(user)
   });
  
-  return res.end();
+  return res.json(generateUserDataAndJwt(user));
 });
 
-app.post('/v1/goals/:id/achieve', verifyToken, async (req, res) => {
+app.post('/v1/goals/:id/achieve', ensureLoggedIn, verifyToken, async (req, res) => {
   let goal = null;
   let user = null;
   let { user_jwt } = req;
