@@ -11,7 +11,7 @@
           <div class="alert alert-success" v-if="feedback">
             {{feedback}}
           </div>
-          <form class="d-flex flex-column" @submit.prevent="createGoal">
+          <Form class="d-flex flex-column" :submitHandler="createGoal">
             <div class="form-group">
               <Label for="title" label="Title" required/>
               <Input type="text" name="title" id="title" v-model="form.title" required/>
@@ -37,7 +37,7 @@
               <Button type="reset" class="btn-danger" :click="clean">Clean</Button>
               <Button type="submit" class="btn-primary">Create Goal</Button>
             </div>
-          </form>
+          </Form>
         </CardBody>
       </Card>
     </div>
@@ -47,6 +47,7 @@
 <script>
 import Card from '@/components/atoms/Card'
 import CardBody from '@/components/atoms/CardBody'
+import Form from '@/components/atoms/Form'
 import Label from '@/components/atoms/Label'
 import Input from '@/components/atoms/Input'
 import Button from '@/components/atoms/Button'
@@ -67,6 +68,7 @@ export default {
   components: {
     Card,
     CardBody,
+    Form,
     Label,
     Input,
     Button,

@@ -3,7 +3,7 @@
     <Card>
       <CardBody>
        <div class="alert alert-danger" v-if="error">{{error}}</div>
-       <form class="d-flex flex-column" @submit.prevent="signIn">
+       <Form class="d-flex flex-column" :submitHandler="signIn">
          <div class="form-group">
            <Label for="username" label="Username"/>
            <Input type="text" id="username" name="username" v-model="username"/>
@@ -13,7 +13,7 @@
            <Input type="password" id="password" name="password" v-model="password"/>
          </div>
          <Button type="submit" class="btn-primary ml-auto mr-auto">Sign In</Button>
-       </form>
+       </Form>
       </CardBody>
     </Card>
   </div>
@@ -22,6 +22,7 @@
 <script>
 import Card from '@/components/atoms/Card'
 import CardBody from '@/components/atoms/CardBody'
+import Form from '@/components/atoms/Form'
 import Label from '@/components/atoms/Label'
 import Input from '@/components/atoms/Input'
 import Button from '@/components/atoms/Button'
@@ -33,6 +34,7 @@ export default {
   components: {
     Card,
     CardBody,
+    Form,
     Label,
     Input,
     Button
