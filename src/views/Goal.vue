@@ -69,17 +69,18 @@ export default {
       channel: null
     }
   },
-  async mounted() {
-    this.user = this.$store.getters.user
-    this.uid = this.user.id
-    this.id = this.$route.params.id
-
+  mounted() {
     this.channel = this.$store.getters.channel
     const { ACHIEVE_EVENT, COLLABORATION_EVENT } = this.$store.getters.events
   
     this.channel.bind(ACHIEVE_EVENT, this.pusherHandler)
     this.channel.bind(COLLABORATION_EVENT, this.pusherHandler)
-    
+  },
+  async created () {        
+    this.user = this.$store.getters.user
+    this.uid = this.user.id
+    this.id = this.$route.params.id
+
     try {
       const response = await axios.get(`/v1/goals/${this.id}`, {
         headers: {
@@ -102,6 +103,9 @@ export default {
       this.goal = goal
     },
     async closeGoal() {
+
+      this.goal.is_open = false
+
       try {
         await axios.post(`/v1/goals/${this.id}/achieve`, {}, {
           headers: {
@@ -112,6 +116,8 @@ export default {
         const { status } = error.response
         const { $router: r } = this;
         
+        this.goal.is_open = true
+
         if (status === 401) return r.push('/sign-in')
         else if (status == 404) return r.push('/404')
 
