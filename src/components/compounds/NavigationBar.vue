@@ -16,8 +16,8 @@
       <div class="nav-item">
         <router-link to="/about" class="nav-link">About</router-link>
       </div>
-      <div class="nav-item">
-        <router-link to="/sign-out">Sign Out</router-link>
+      <div class="nav-item ml-auto">
+        <button @click="signOut" class="btn btn-danger">Sign Out</button>
       </div>
     </NavBarNav>
     <NavBarNav v-else>
@@ -42,6 +42,8 @@ import NavBarNav from '@/components/atoms/NavBarNav'
 
 import { verifyLoggedIn } from '@/utils'
 
+import axios from 'axios'
+
 export default {
   name: 'NavigationBar',
   components: {
@@ -52,6 +54,18 @@ export default {
   data() {
     return {
       isLoggedIn: verifyLoggedIn()
+    }
+  },
+  methods: {
+    async signOut () {
+      try {
+        await axios.post('/sign-out')
+        const { dispatch } = this.$store
+        dispatch('user', null)
+        dispatch('jwt', null)
+      } catch (error) {}
+
+      this.$router.push('/')
     }
   }
 }

@@ -89,6 +89,11 @@ app.post(
   }
 );
 
+app.post('/sign-out', ensureLoggedIn, (req, res) => {
+  req.logout();
+  res.redirect('/');
+});
+
 app.get('/v1/goals', async (req, res) => {
   try {
     const goals = await Goal.find();
