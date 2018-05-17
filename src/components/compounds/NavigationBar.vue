@@ -17,7 +17,7 @@
         <router-link to="/about" class="nav-link">About</router-link>
       </div>
       <div class="nav-item ml-auto">
-        <button @click="signOut" class="btn btn-danger">Sign Out</button>
+        <Button @click="signOut" class="btn-danger">Sign Out</Button>
       </div>
     </NavBarNav>
     <NavBarNav v-else>
