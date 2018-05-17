@@ -6,7 +6,9 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "test": "vue-cli-service test",
-    "server": "yarn build && nodemon server/index.js"
+    "server": "yarn build && nodemon server/index.js",
+    "purify": "purifycss dist/css/app.*.css dist/js/*.*.js dist/*.*.*.js --min --info --out dist/css/chipin.css",
+    "postbuild": "yarn purify"
   },
   "dependencies": {
     "axios": "^0.18.0",
@@ -42,6 +44,7 @@
     "babel-jest": "^22.0.4",
     "dotenv": "^5.0.1",
     "node-sass": "^4.7.2",
+    "purify-css": "^1.2.5",
     "sass-loader": "^6.0.6",
     "vue-template-compiler": "^2.5.13"
   },
