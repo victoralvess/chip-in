@@ -6,6 +6,10 @@
   </div>
 </template>
 
+<style scoped>
+@import "../styles/css/progress.css";
+</style>
+
 <script>
 export default {
   props: {
