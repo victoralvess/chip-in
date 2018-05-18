@@ -16,6 +16,6 @@ export function isLoggedIn (to, from, next) {
   if (verifyLoggedIn()) {
     next()
   } else {
-    next('/sign-in')
+    next(`/sign-in?next=${to.path}`)
   }
 }
