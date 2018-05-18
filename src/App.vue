@@ -4,21 +4,8 @@
   </div>
 </template>
 
-<style lang="scss" scoped>
+<style>
 @import "main.css";
-/*@import "../node_modules/bootstrap/scss/bootstrap-reboot";
-//@import "../node_modules/bootstrap/scss/bootstrap-grid";
-@import "../node_modules/bootstrap/scss/mixins/lists";
-@import "../node_modules/bootstrap/scss/mixins/transition";
-//@import "../node_modules/bootstrap/scss/root";
-@import "../node_modules/bootstrap/scss/type";
-@import "../node_modules/bootstrap/scss/grid";
-@import "../node_modules/bootstrap/scss/transitions";
-@import "../node_modules/bootstrap/scss/jumbotron";
-@import "../node_modules/bootstrap/scss/alert";
-@import "../node_modules/bootstrap/scss/utilities/flex";
-@import "../node_modules/bootstrap/scss/utilities/display";
-@import "../node_modules/bootstrap/scss/utilities/spacing";*/
 
 #app {
   -webkit-font-smoothing: antialiased;
@@ -43,5 +30,6 @@
 
 <script>
 import 'bootstrap'
+
 export default {}
 </script>
