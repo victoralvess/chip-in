@@ -21,7 +21,7 @@ export default {
   methods: {
     async signOut () {
       try {
-        await axios.post('/sign-out')
+        await axios.get('/sign-out')
         const { dispatch } = this.$store
         dispatch('user', null)
         dispatch('jwt', null)
