@@ -26,7 +26,22 @@ export default {
   },
   async mounted () {
     this.channel = this.$store.getters.channel
-    const { CREATED_EVENT } = this.$store.getters.events
+    const { COLLABORATION_EVENT, CREATED_EVENT } = this.$store.getters.events
+
+    this.channel.bind(COLLABORATION_EVENT, ({ goal }) => {
+      const { id } = goal
+
+      if (this.goals && this.goals.length) {
+        const index = this.goals.findIndex(g => g.id === id)
+        this.goals = [
+          ...this.goals.slice(0, index),
+          goal,
+          ...this.goals.slice(index + 1)
+        ]
+      } else {
+        this.goals = [ ...goal ]
+      }
+    })
 
     this.channel.bind(CREATED_EVENT, ({ goal }) => {
       if (this.goals && this.goals.length)
