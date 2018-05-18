@@ -4,6 +4,7 @@ import { isLoggedIn } from './utils'
 
 const Home = () => import('./views/Home.vue')
 const SignIn = () => import('./views/SignIn.vue')
+const SignUp = () => import('./views/SignUp.vue')
 const Dashboard = () => import('./views/Dashboard/Dashboard.vue')
 const DashboardHome = () => import('./views/Dashboard/Home.vue')
 const CreateGoal = () => import('./views/Dashboard/Goal/Create.vue')
@@ -22,6 +23,11 @@ export default new Router({
       path: '/sign-in',
       name: 'sign-in',
       component: SignIn
+    },
+    {
+      path: '/sign-up',
+      name: 'sign-up',
+      component: SignUp
     },
     {
       path: '/dashboard',
