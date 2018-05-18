@@ -9,7 +9,7 @@
     "server": "yarn build && nodemon server/index.js",
     "purify": "purifycss dist/css/app.*.css dist/js/*.*.js dist/*.*.*.js --min --info --out dist/css/chipin.css",
     "postbuild": "yarn purify && bash -c 'echo | cat dist/css/chipin.css > dist/css/app*'",
-    "now-start": "node server/index.js"
+    "now-start": "NODE_ENV=production node server/index.js"
   },
   "dependencies": {
     "axios": "^0.18.0",
