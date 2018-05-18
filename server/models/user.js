@@ -6,11 +6,13 @@ const schema = new Schema({
     type: String,
     required: true,
     trim: true,
-    minlength: 6,
+    unique: true,
+    minlength: 4,
     maxlength: 14
   },
   password: {
     type: String,
+    minlength: 6,
     required: true
   },
   wallet: {
