@@ -8,7 +8,8 @@
     "test": "vue-cli-service test",
     "server": "yarn build && nodemon server/index.js",
     "purify": "purifycss dist/css/app.*.css dist/js/*.*.js dist/*.*.*.js --min --info --out dist/css/chipin.css",
-    "postbuild": "yarn purify && bash -c 'echo | cat dist/css/chipin.css > dist/css/app*'"
+    "postbuild": "yarn purify && bash -c 'echo | cat dist/css/chipin.css > dist/css/app*'",
+    "now-start": "node server/index.js"
   },
   "dependencies": {
     "axios": "^0.18.0",
@@ -44,6 +45,7 @@
     "babel-jest": "^22.0.4",
     "dotenv": "^5.0.1",
     "node-sass": "^4.7.2",
+    "now": "^11.1.12",
     "purify-css": "^1.2.5",
     "sass-loader": "^6.0.6",
     "vue-template-compiler": "^2.5.13"
@@ -52,5 +54,8 @@
     "> 1%",
     "last 2 versions",
     "not ie <= 8"
-  ]
+  ],
+  "engine": {
+    "node": "10.1.0"
+  }
 }
