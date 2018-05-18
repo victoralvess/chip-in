@@ -65,9 +65,7 @@ const generateUserDataAndJwt = (user) => {
   const token = jwt.sign({
     ...userData,
     exp: new Date(Date.now() + 60 * 60 * 1000).getTime() / 1000
-  }, process.env.JWT_SECRET, /*{
-    expiresIn: '1h'
-  }*/);
+  }, process.env.JWT_SECRET);
   return {
     user: userData,
     jwt: token
