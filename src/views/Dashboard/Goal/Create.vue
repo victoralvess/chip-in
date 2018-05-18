@@ -1,6 +1,6 @@
 <template>
-  <div> 
-    <div class="h-100 container d-flex justify-content-center align-items-center">
+  <div class="d-flex align-items-center justify-content-center h-100"> 
+    <div class="container">
       <Card class="flex-1">
         <CardBody>
           <ListGroup v-if="errors.length">
