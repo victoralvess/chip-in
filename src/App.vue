@@ -20,15 +20,19 @@
 }
 
 .mb-20 {
-  margin-bottom: 20px;
+  margin-bottom: 20px !important;
+}
+
+.mb-40 {
+  margin-bottom: 40px !important;
 }
  
 .flex-1 {
-  flex: 1;
+  flex: 1 !important;
 }
 
 .h-100 {
-  height: 100%;
+  height: 100% !important;
 }
 </style>
 

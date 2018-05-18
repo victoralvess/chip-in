@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="mb-40">
     <LinePlaceholder v-if="!goals" :times="placeholders" />
     <ListGroup v-if="goals && goals.length > 0">
       <ListGroupItem v-for="goal of goals" :key="goal.id">

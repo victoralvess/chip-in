@@ -13,9 +13,6 @@
       <div class="nav-item">
         <router-link to="/dashboard/goals/create" class="nav-link">Create a Goal</router-link>
       </div>
-      <div class="nav-item">
-        <router-link to="/about" class="nav-link">About</router-link>
-      </div>
       <div class="nav-item ml-auto">
         <Button :click="signOut" class="btn-danger">Sign Out</Button>
       </div>
@@ -25,7 +22,7 @@
         <router-link to="/" class="nav-link">Home</router-link>
       </div>
       <div class="nav-item">
-        <router-link to="/sign-in">Sign In</router-link>
+        <router-link to="/sign-in" class="nav-link">Sign In</router-link>
       </div>
     </NavBarNav>
   </NavBar>
