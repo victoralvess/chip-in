@@ -116,9 +116,9 @@ app.post('/sign-up', ensureLoggedOut, async (req, res) => {
   }
 });
 
-app.get('/sign-out', ensureLoggedIn, (req, res) => {
+app.get('/sign-out', (req, res) => {
   req.logout();
-  res.redirect('/');
+  res.end();
 });
 
 app.get('/v1/goals', async (req, res) => {
