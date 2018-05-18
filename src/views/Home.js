@@ -39,7 +39,7 @@ export default {
           ...this.goals.slice(index + 1)
         ]
       } else {
-        this.goals = [ ...goal ]
+        this.goals = [ goal ]
       }
     })
 
@@ -47,7 +47,7 @@ export default {
       if (this.goals && this.goals.length)
         this.goals.push(goal)
       else
-        this.goals = [ ...goal ]
+        this.goals = [ goal ]
     })    
   },
   beforeDestroy () {

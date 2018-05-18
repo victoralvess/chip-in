@@ -33,7 +33,7 @@ export default {
           ...this.goals.slice(index + 1)
         ]
       } else {
-        this.goals = [ ...goal ]
+        this.goals = [ goal ]
       }
     })
 
@@ -41,7 +41,7 @@ export default {
       if (this.goals && this.goals.length) {
         this.goals.push(goal)
       } else {
-        this.goals = [ ...goal ]
+        this.goals = [ goal ]
       }
     })
   },
@@ -55,7 +55,7 @@ export default {
           'Authorization': `Bearer ${jwt}`
         }
       })
-//this.user= null
+
       const goals = response.data
       this.goals = goals
     } catch (error) {
