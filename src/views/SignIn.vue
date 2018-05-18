@@ -62,11 +62,21 @@ export default {
 
         this.$store.dispatch('user', response.data.user)
         this.$store.dispatch('jwt', response.data.jwt)
+        
+        const  { next } = this.$route.query
+        if (next) {
+          return this.$router.push({ path: decodeURIComponent(next) })
+        }
 
-        this.$router.push('/dashboard/')
+        this.$router.push('/dashboard')
       } catch (error) {
-        if (error.response.data.message) {
-          this.error = error.response.data.message
+        try {
+          const { response: { data: { message } } } = error
+          if (message) {
+            this.error = error.response.data.message
+          }
+        } catch (e) {
+          this.error = 'Something went wrong.'
         }
       }
     }

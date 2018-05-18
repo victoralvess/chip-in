@@ -103,12 +103,17 @@ export default {
 
         this.feedback = 'Goal created.'
         this.errors = []
-        setTimeout(_ => this.feedback = null, 7000)
+        setTimeout(_ => this.feedback = null, 5000)
         this.form = { ...defaultForm }
         store.dispatch('cleanCreateGoalForm')
       } catch(error) {
-        if (error.response.status === 401) return this.$router.push('/')
-        this.errors = error.response.data
+        try {
+          const { status, data } = error.response
+          if (status === 401 || status === 403) return this.$router.push({ name: 'sign-in', query: this.$route.path })
+          this.errors = data
+        } catch (e) {
+          this.errors = [{ message: 'Something went wrong.' }]
+        }
       }
     },
     clean() {

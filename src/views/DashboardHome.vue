@@ -75,8 +75,10 @@ export default {
       const goals = response.data
       this.goals = goals
     } catch (error) {
-      const { status } = error.response
-      if (status === 401 || status === 403) return this.$router.push('/sign-in')
+      try {
+        const { status } = error.response
+        if (status === 401 || status === 403) return this.$router.push({ name: 'sign-in', query: { next: this.$route.path } })
+      } catch (e) {}
       this.$router.push('/')
     }
   },

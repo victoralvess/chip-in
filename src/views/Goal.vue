@@ -91,7 +91,7 @@ export default {
     } catch (error) {
       const { status } = error.response
       if (status === 404) return this.$router.push('/404')
-      else if (status === 401) return this.$router.push('/sign-in')
+      else if (status === 401) return this.$router.push({ name: 'sign-in', query: { next: this.$route.path } })
       this.$router.push('/')
     }
   },
