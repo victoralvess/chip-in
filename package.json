@@ -8,7 +8,7 @@
     "test": "vue-cli-service test",
     "server": "yarn build && nodemon server/index.js",
     "purify": "purifycss dist/css/app.*.css dist/js/*.*.js dist/*.*.*.js --min --info --out dist/css/chipin.css",
-    "postbuild": "yarn purify"
+    "postbuild": "yarn purify && bash -c 'echo | cat dist/css/chipin.css > dist/css/app*'"
   },
   "dependencies": {
     "axios": "^0.18.0",
