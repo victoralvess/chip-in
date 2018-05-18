@@ -7,16 +7,7 @@
 </template>
 
 <style scoped>
-@import "../styles/css/progress.css";
+@import "../../styles/css/progress.css";
 </style>
 
-<script>
-export default {
-  props: {
-    value: {
-      type: Number,
-      required: true
-    }
-  }
-}
-</script>
+<script src="./ProgressBar.js"></script>

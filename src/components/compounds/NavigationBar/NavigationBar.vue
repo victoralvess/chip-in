@@ -17,7 +17,7 @@
         <router-link to="/about" class="nav-link">About</router-link>
       </div>
       <div class="nav-item ml-auto">
-        <Button @click="signOut" class="btn-danger">Sign Out</Button>
+        <Button :click="signOut" class="btn-danger">Sign Out</Button>
       </div>
     </NavBarNav>
     <NavBarNav v-else>
@@ -32,41 +32,11 @@
 </template>
 
 <style scoped>
-@import "../styles/css/navigation.css";
+@import "../../styles/css/navigation.css";
+.router-link-exact-active {
+  color: #383d41;
+  font-weight: bold;
+}
 </style>
 
-<script>
-import Button from '@/components/atoms/Button'
-import NavBar from '@/components/atoms/NavBar'
-import NavBarNav from '@/components/atoms/NavBarNav'
-
-import { verifyLoggedIn } from '@/utils'
-
-import axios from 'axios'
-
-export default {
-  name: 'NavigationBar',
-  components: {
-    Button,
-    NavBar,
-    NavBarNav
-  },
-  data() {
-    return {
-      isLoggedIn: verifyLoggedIn()
-    }
-  },
-  methods: {
-    async signOut () {
-      try {
-        await axios.post('/sign-out')
-        const { dispatch } = this.$store
-        dispatch('user', null)
-        dispatch('jwt', null)
-      } catch (error) {}
-
-      this.$router.push('/')
-    }
-  }
-}
-</script>
+<script src="./NavigationBar.js"></script>

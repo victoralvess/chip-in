@@ -14,18 +14,4 @@
 }
 </style>
 
-<script>
-import Placeholder from '@/components/atoms/Placeholder'
-
-export default {
-  components: {
-    Placeholder
-  },
-  props: {
-    times: {
-      type: Number,
-      default: 1
-    }
-  }
-}
-</script>
+<script src="./Button.js"></script>

@@ -5,5 +5,5 @@
 </template>
 
 <style scoped>
-@import "../styles/css/list.css";
+@import "../../styles/css/list.css";
 </style>

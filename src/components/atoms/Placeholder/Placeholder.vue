@@ -6,7 +6,7 @@
   </div>
 </template>
 
-<style lang="scss">
+<style>
 .last {
   margin-bottom: 20px !important;
 }
@@ -24,14 +24,4 @@
 }
 </style>
 
-<script>
-
-export default {
-  props: {
-    times: {
-      type: Number,
-      default: 1
-    }
-  }
-}
-</script>
+<script src="./Placeholder.js"></script>
