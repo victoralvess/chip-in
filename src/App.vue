@@ -18,6 +18,10 @@
 #app > * {
   height: 100%;
 }
+
+.mb-20 {
+  margin-bottom: 20px;
+}
  
 .flex-1 {
   flex: 1;
