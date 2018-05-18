@@ -55,6 +55,12 @@ const ensureLoggedIn = (req, res, next) => {
   return res.status(401).end();
 };
 
+const ensureLoggedOut = (req, res, next) => {
+  const { user } = req;
+  if (!user) return next();
+  res.redirect('/sign-out');
+};
+
 const generateUserDataAndJwt = (user) => { 
   const userData = {
     id: user.id,
@@ -87,7 +93,30 @@ app.post(
   }
 );
 
-app.post('/sign-out', ensureLoggedIn, (req, res) => {
+app.post('/sign-up', ensureLoggedOut, async (req, res) => {
+  const { username, password, confirmPassword } = req.body;
+
+  if (password !== confirmPassword) return res.status(400).send({ message: "Passwords don't match." })
+
+  try {
+    await User.create({
+      username,
+      password    
+    });
+
+    res.status(201).end();
+  } catch (error) {
+    const { code } = error;
+
+    if (code === 11000) {
+      return res.status(400).send({ message: "Username already taken." });
+    }
+
+    res.status(400).send({ message: "Invalid credentials." });
+  }
+});
+
+app.get('/sign-out', ensureLoggedIn, (req, res) => {
   req.logout();
   res.redirect('/');
 });
