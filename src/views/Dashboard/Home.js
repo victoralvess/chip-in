@@ -18,7 +18,7 @@ export default {
       channel: null
     }
   },
-  async mounted () {
+  mounted () {
     this.channel = this.$store.getters.channel
     const { COLLABORATION_EVENT, CREATED_EVENT } = this.$store.getters.events
 
@@ -44,7 +44,8 @@ export default {
         this.goals = [ ...goal ]
       }
     })
-    
+  },
+  async created () {
     this.user = this.$store.getters.user
     const jwt = this.$store.getters.jwt
     
@@ -54,7 +55,7 @@ export default {
           'Authorization': `Bearer ${jwt}`
         }
       })
-
+//this.user= null
       const goals = response.data
       this.goals = goals
     } catch (error) {
