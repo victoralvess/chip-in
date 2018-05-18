@@ -4,8 +4,9 @@
   </div>
 </template>
 
-<style lang="scss">
-@import "../node_modules/bootstrap/scss/bootstrap-reboot";
+<style lang="scss" scoped>
+@import "main.css";
+/*@import "../node_modules/bootstrap/scss/bootstrap-reboot";
 //@import "../node_modules/bootstrap/scss/bootstrap-grid";
 @import "../node_modules/bootstrap/scss/mixins/lists";
 @import "../node_modules/bootstrap/scss/mixins/transition";
@@ -17,7 +18,7 @@
 @import "../node_modules/bootstrap/scss/alert";
 @import "../node_modules/bootstrap/scss/utilities/flex";
 @import "../node_modules/bootstrap/scss/utilities/display";
-@import "../node_modules/bootstrap/scss/utilities/spacing";
+@import "../node_modules/bootstrap/scss/utilities/spacing";*/
 
 #app {
   -webkit-font-smoothing: antialiased;
@@ -31,13 +32,6 @@
   height: 100%;
 }
  
-a {
-  &.router-link-exact-active {
-    color: #383d41;
-    font-weight: bold;
-  }
-}
-
 .flex-1 {
   flex: 1;
 }
