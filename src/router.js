@@ -3,12 +3,11 @@ import Router from 'vue-router'
 import { isLoggedIn } from './utils'
 
 const Home = () => import('./views/Home.vue')
-const About = () => import('./views/About.vue')
 const SignIn = () => import('./views/SignIn.vue')
-const Dashboard = () => import('./views/Dashboard.vue')
-const DashboardHome = () => import('./views/DashboardHome.vue')
-const CreateGoal = () => import('./views/CreateGoal.vue')
-const Goal = () => import('./views/Goal.vue')
+const Dashboard = () => import('./views/Dashboard/Dashboard.vue')
+const DashboardHome = () => import('./views/Dashboard/Home.vue')
+const CreateGoal = () => import('./views/Dashboard/Goal/Create.vue')
+const Goal = () => import('./views/Dashboard/Goal/Goal.vue')
 
 Vue.use(Router)
 
@@ -23,11 +22,6 @@ export default new Router({
       path: '/sign-in',
       name: 'sign-in',
       component: SignIn
-    },
-    {
-      path: '/about',
-      name: 'about',
-      component: About
     },
     {
       path: '/dashboard',
