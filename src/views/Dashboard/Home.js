@@ -31,7 +31,7 @@ export default {
             ...this.goals.slice(index + 1)
           ]
         } else {
-          this.goals = push
+          this.goals.push(goal)
         }
       } else {
         this.goals = [ goal ]
