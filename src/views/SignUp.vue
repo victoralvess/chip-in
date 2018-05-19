@@ -16,6 +16,9 @@
            <Label for="confirm-password" label="Confirm password"/>
            <Input type="password" id="confirm-password" name="confirm-password" v-model="confirmPassword" minlength="6"/>
          </div>
+         <small class="mb-20">
+           <router-link to="/sign-in">I already have an account.</router-link>
+         </small>
          <Button type="submit" class="btn-primary ml-auto mr-auto">Sign Up</Button>
        </Form>
       </CardBody>

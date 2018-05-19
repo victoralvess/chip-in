@@ -13,7 +13,7 @@
             <Input type="password" id="password" name="password" v-model="password" minlength="6"/>
           </div>
           <small class="mb-20">
-            <router-link to="/sign-up">I don't have a account</router-link>
+            <router-link to="/sign-up">I don't have a account.</router-link>
           </small>
           <Button type="submit" class="btn-primary ml-auto mr-auto">Sign In</Button>          
         </Form>
