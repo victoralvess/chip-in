@@ -60,6 +60,7 @@ export default new Router({
     },
     {
       path: '/error/:code/:message',
+      name: 'error',
       component: ErrorPage
     },
     {
