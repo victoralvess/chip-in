@@ -122,10 +122,11 @@ app.get('/sign-out', (req, res) => {
 app.get('/v1/goals', async (req, res) => {
   try {
     const goals = await Goal.find();
+
     const g = goals.map(goal => goal.formatted);
     return res.status(200).json(g);
   } catch (e) {
-    res.status(500).json({ message: 'Something went wrong.' });
+    res.status(500).json({ message: 'Server Error. Try Again Soon' });
   }
 });
 
