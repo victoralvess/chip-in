@@ -57,7 +57,7 @@
     "last 2 versions",
     "not ie <= 8"
   ],
-  "engine": {
+  "engines": {
     "node": "10.1.0"
   }
 }
