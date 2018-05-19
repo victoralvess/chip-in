@@ -3,6 +3,7 @@ import GoalsList from '@/components/compounds/GoalsList/GoalsList.vue'
 //import CardBody from '@/components/atoms/Card/Body/Body.vue'
 
 import axios from 'axios'
+import uniqBy from 'lodash.uniqby'
 
 export default {
   name: 'dashboard',
@@ -25,11 +26,11 @@ export default {
       if (this.goals && this.goals.length) {
         const index = this.goals.findIndex(g => g.id === id)
         if (index > -1) {
-          this.goals = [
+          this.goals = uniqBy([
             ...this.goals.slice(0, index),
             goal,
             ...this.goals.slice(index + 1)
-          ]
+          ], 'id')
         } else {
           this.goals.push(goal)
         }
