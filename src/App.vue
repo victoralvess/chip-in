@@ -34,6 +34,12 @@
 .h-100 {
   height: 100% !important;
 }
+
+.go-to-home-link {
+  position: absolute;
+  top: 80px;
+  left: 50px;
+}
 </style>
 
 <script>

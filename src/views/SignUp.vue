@@ -1,5 +1,8 @@
 <template>
   <div class="flex-1 d-flex flex-column justify-content-center align-items-center">
+    <div class="go-to-home-link">
+      <router-link to="/">Go to Home</router-link>
+    </div>    
     <Card>
       <CardBody>
        <div class="alert alert-danger" v-if="error">{{error}}</div>
