@@ -18,24 +18,32 @@ export default {
       channel: null
     }
   },
-  mounted () {
-    this.channel = this.$store.getters.channel
-    const { COLLABORATION_EVENT, CREATED_EVENT } = this.$store.getters.events
-
-    this.channel.bind(COLLABORATION_EVENT, ({ goal }) => {
+  methods: {
+    handler ({ goal }) {
       const { id } = goal
 
       if (this.goals && this.goals.length) {
         const index = this.goals.findIndex(g => g.id === id)
-        this.goals = [
-          ...this.goals.slice(0, index),
-          goal,
-          ...this.goals.slice(index + 1)
-        ]
+        if (index > -1) {
+          this.goals = [
+            ...this.goals.slice(0, index),
+            goal,
+            ...this.goals.slice(index + 1)
+          ]
+        } else {
+          this.goals = push
+        }
       } else {
         this.goals = [ goal ]
       }
-    })
+    }
+  },
+  mounted () {
+    this.channel = this.$store.getters.channel
+    const { ACHIEVE_EVENT, COLLABORATION_EVENT, CREATED_EVENT } = this.$store.getters.events
+
+    this.channel.bind(ACHIEVE_EVENT, this.handler)
+    this.channel.bind(COLLABORATION_EVENT, this.handler)
 
     this.channel.bind(CREATED_EVENT, ({ goal }) => {
       if (this.goals && this.goals.length) {
