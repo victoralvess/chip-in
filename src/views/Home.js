@@ -22,7 +22,12 @@ export default {
 
       this.goals = response.data
     } catch (error) {
-      return this.$router.push('/404')
+      try {
+        const { status, data: { message } } = error.response
+        return this.$router.push({ name: 'error', params: { code: status, message: message } })
+      } catch (error) {
+        return this.$router.push({ name: 'error', params: { code: 500, message: 'Server Error. Try Again Soon.' } })
+      }
     }
   },
   async mounted () {
