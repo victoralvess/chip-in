@@ -6,11 +6,11 @@
        <Form class="d-flex flex-column" :submitHandler="signIn">
           <div class="form-group">
             <Label for="username" label="Username"/>
-            <Input type="text" id="username" name="username" v-model="username"/>
+            <Input type="text" id="username" name="username" v-model="username" minlength="4"/>
           </div>
           <div class="form-group">
             <Label for="password" label="Password"/>
-            <Input type="password" id="password" name="password" v-model="password"/>
+            <Input type="password" id="password" name="password" v-model="password" minlength="6"/>
           </div>
           <small class="mb-20">
             <router-link to="/sign-up">I don't have a account</router-link>
