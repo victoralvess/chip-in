@@ -1,5 +1,6 @@
 require('dotenv').config({ path: __dirname + '/.env'});
 const express = require('express');
+const helmet = require('helmet');
 const passport = require('passport');
 const bodyParser = require('body-parser');
 const session = require('express-session');
@@ -8,7 +9,7 @@ const compression = require('compression');
 const jwt = require('jsonwebtoken');
 const Pusher = require('pusher');
 
-const { mongoose, passport: unsed } = require('./config');
+const { mongoose } = require('./config');
 const Goal = require('./models/goal');
 const User = require('./models/user');
 
@@ -28,6 +29,7 @@ const ACHIEVE_EVENT = 'achieve';
 const CREATED_EVENT = 'created';
 
 const app = express();
+app.use(helmet());
 app.use(compression());
 app.use(express.static('dist'));
 app.use(session({
@@ -44,10 +46,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(passport.initialize());
 app.use(passport.session());
-
-app.get('/hello', (req, res) => {
-  res.send('hello');
-});
 
 const ensureLoggedIn = (req, res, next) => {
   const { user } = req;
@@ -304,6 +302,10 @@ function removeWhiteSpace(str) {
   return str.replace(/\s{2,}/g, ' ').trim();
 }
 
-app.listen(4000, () => {
-  console.log(`Server running at: http://localhost:4000`);
-});
+if (process.env.NODE_ENV === 'production') {
+  app.listen(443);
+} else {
+  app.listen(4000, () => {
+    console.log(`Server running at: http://localhost:4000`);
+  });
+}
