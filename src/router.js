@@ -9,6 +9,7 @@ const Dashboard = () => import('./views/Dashboard/Dashboard.vue')
 const DashboardHome = () => import('./views/Dashboard/Home.vue')
 const CreateGoal = () => import('./views/Dashboard/Goal/Create.vue')
 const Goal = () => import('./views/Dashboard/Goal/Goal.vue')
+const ErrorPage = () => import('./views/ErrorPage/ErrorPage.vue')
 
 Vue.use(Router)
 
@@ -56,6 +57,14 @@ export default new Router({
           }
         }
       ]
+    },
+    {
+      path: '/error/:code/:message',
+      component: ErrorPage
+    },
+    {
+      path: '**',
+      component: ErrorPage
     }
   ]
 })
