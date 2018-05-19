@@ -25,6 +25,7 @@ export default {
         const { dispatch } = this.$store
         dispatch('user', null)
         dispatch('jwt', null)
+        this.isLoggedIn = false;
       } catch (error) {}
 
       this.$router.push('/')
