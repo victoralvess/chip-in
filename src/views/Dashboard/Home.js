@@ -71,6 +71,7 @@ export default {
       try {
         const { status } = error.response
         if (status === 401 || status === 403) return this.$router.push({ name: 'sign-in', query: { next: this.$route.path } })
+        if (status === 404) return this.$router.push({ name: 'error', params: { code: status, message: 'Goals not found.' } })
       } catch (e) {}
       this.$router.push('/')
     }
