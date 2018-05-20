@@ -14,9 +14,13 @@ const ENCRYPTED = true
 const CLUSTER = 'mt1'
 
 const CHANNEL_NAME = 'chip-in'
-const COLLABORATION_EVENT = 'collaboration'
-const ACHIEVE_EVENT = 'achieve'
-const CREATED_EVENT = 'created'
+const PRIVATE_CHANNEL_NAME = 'private-' + CHANNEL_NAME
+const EVENTS = {
+  COLLABORATION_EVENT: 'collaboration',
+  ACHIEVE_EVENT:'achieve',
+  CREATED_EVENT: 'created',
+  WALLET_UPDATED_EVENT: 'wallet-updated',
+}
 
 const pusher = new Pusher(PUSHER_APP_KEY, {
   wsHost: WS_HOST,
@@ -26,6 +30,7 @@ const pusher = new Pusher(PUSHER_APP_KEY, {
 })
 
 const channel = pusher.subscribe(CHANNEL_NAME)
+//const privateChannel = pusher.subscribe(PRIVATE_CHANNEL_NAME)
 
 export default new Vuex.Store({
   state: {
@@ -69,11 +74,8 @@ export default new Vuex.Store({
     createGoalForm: state => state.createGoal.form,
     pusher: _ => pusher,
     channel: _ => channel,
-    events: _ => ({
-      ACHIEVE_EVENT,
-      COLLABORATION_EVENT,
-      CREATED_EVENT
-    })
+    //    privateChannel: _ => privateChannel,
+    events: _ => EVENTS
   },
   plugins: [createPersistedState({
     storage: {

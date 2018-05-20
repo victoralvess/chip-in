@@ -27,6 +27,7 @@ const CHANNEL_NAME = 'chip-in';
 const COLLABORATION_EVENT = 'collaboration';
 const ACHIEVE_EVENT = 'achieve';
 const CREATED_EVENT = 'created';
+const WALLET_UPDATED_EVENT = 'wallet-updated';
 
 const app = express();
 app.use(helmet());
@@ -246,6 +247,11 @@ app.post('/v1/goals/:id/contribute', ensureLoggedIn, verifyToken, async (req, re
   pusher.trigger(CHANNEL_NAME, COLLABORATION_EVENT, {
     goal: goal.formatted,
     // ...generateUserDataAndJwt(user)
+  });
+
+  pusher.trigger(CHANNEL_NAME, WALLET_UPDATED_EVENT, {
+    uid: goal.uid,
+    value: user.wallet
   });
  
   return res.json(generateUserDataAndJwt(user));

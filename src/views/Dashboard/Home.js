@@ -16,35 +16,44 @@ export default {
     return {
       user: null,
       goals: null,
-      channel: null
+      channel: null,
+      privateChannel: null,
     }
   },
   methods: {
     handler ({ goal }) {
-      const { id } = goal
+      const { id, uid } = goal
 
-      if (this.goals && this.goals.length) {
-        const index = this.goals.findIndex(g => g.id === id)
-        if (index > -1) {
-          this.goals = uniqBy([
-            ...this.goals.slice(0, index),
-            goal,
-            ...this.goals.slice(index + 1)
-          ], 'id')
+      if (uid === this.user.id) {
+        if (this.goals && this.goals.length) {
+          const index = this.goals.findIndex(g => g.id === id)
+          if (index > -1) {
+            this.goals = uniqBy([
+              ...this.goals.slice(0, index),
+              goal,
+              ...this.goals.slice(index + 1)
+            ], 'id')
+          } else {
+            this.goals.push(goal)
+          }
         } else {
-          this.goals.push(goal)
+          this.goals = [ goal ]
         }
-      } else {
-        this.goals = [ goal ]
       }
     }
   },
   mounted () {
     this.channel = this.$store.getters.channel
-    const { ACHIEVE_EVENT, COLLABORATION_EVENT, CREATED_EVENT } = this.$store.getters.events
+    // this.privateChannel = this.$store.getters.privateChannel
+    const { ACHIEVE_EVENT, COLLABORATION_EVENT, CREATED_EVENT, WALLET_UPDATED_EVENT } = this.$store.getters.events
 
     this.channel.bind(ACHIEVE_EVENT, this.handler)
     this.channel.bind(COLLABORATION_EVENT, this.handler)
+    this.channel.bind(WALLET_UPDATED_EVENT, ({ uid, value }) => {
+      if (uid !== this.user.id) {
+        this.user.wallet = value;
+      }
+    })
 
     this.channel.bind(CREATED_EVENT, ({ goal }) => {
       if (this.goals && this.goals.length) {
