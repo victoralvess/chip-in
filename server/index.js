@@ -250,6 +250,7 @@ app.post('/v1/goals/:id/contribute', ensureLoggedIn, verifyToken, async (req, re
   });
 
   pusher.trigger(CHANNEL_NAME, WALLET_UPDATED_EVENT, {
+    event: COLLABORATION_EVENT,
     uid: goal.uid,
     value: user.wallet
   });
@@ -300,6 +301,12 @@ app.post('/v1/goals/:id/achieve', ensureLoggedIn, verifyToken, async (req, res) 
 
   pusher.trigger(CHANNEL_NAME, ACHIEVE_EVENT, {
     goal: goal.formatted
+  });
+
+  pusher.trigger(CHANNEL_NAME, WALLET_UPDATED_EVENT, {
+    event: ACHIEVE_EVENT,
+    uid: goal.uid,
+    value: user.wallet
   });
 
   res.end();

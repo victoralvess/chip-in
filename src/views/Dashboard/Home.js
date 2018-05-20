@@ -49,17 +49,23 @@ export default {
 
     this.channel.bind(ACHIEVE_EVENT, this.handler)
     this.channel.bind(COLLABORATION_EVENT, this.handler)
-    this.channel.bind(WALLET_UPDATED_EVENT, ({ uid, value }) => {
-      if (uid !== this.user.id) {
-        this.user.wallet = value;
+    this.channel.bind(WALLET_UPDATED_EVENT, ({ event, uid, value }) => {
+      const uidIsEqual = uid === this.user.id
+      const uidHaveToBeEqual = event === ACHIEVE_EVENT
+      const match = uidIsEqual === uidHaveToBeEqual// || (!uidEqual)
+
+      if (match) {
+        this.user.wallet = value
       }
     })
 
     this.channel.bind(CREATED_EVENT, ({ goal }) => {
-      if (this.goals && this.goals.length) {
-        this.goals.push(goal)
-      } else {
-        this.goals = [ goal ]
+      if (this.user.id === goal.uid) {
+        if (this.goals && this.goals.length) {
+          this.goals.push(goal)
+        } else {
+          this.goals = [ goal ]
+        }
       }
     })
   },
