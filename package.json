@@ -5,11 +5,11 @@
   "scripts": {
     "start-server": "nodemon server/index.js -w server",
     "serve": "vue-cli-service serve",
+    "prebuild": "npm rebuild node-sass --force",
     "build": "vue-cli-service build",
-    "test": "vue-cli-service test",
-    "server": "yarn build && nodemon server/index.js",
-    "purify": "purifycss dist/css/app.*.css dist/js/*.*.js dist/*.*.*.js --min --info --out dist/css/chipin.css",
     "postbuild": "yarn purify && bash -c 'echo | cat dist/css/chipin.css > dist/css/app*'",
+    "purify": "purifycss dist/css/app.*.css dist/js/*.*.js dist/*.*.*.js --min --info --out dist/css/chipin.css",
+    "test": "vue-cli-service test",
     "now-start": "NODE_ENV=production node server/index.js"
   },
   "dependencies": {
