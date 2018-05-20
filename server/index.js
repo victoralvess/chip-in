@@ -309,7 +309,7 @@ app.post('/v1/goals/:id/achieve', ensureLoggedIn, verifyToken, async (req, res) 
     value: user.wallet
   });
 
-  res.end();
+  return res.json(generateUserDataAndJwt(user));
 });
 
 function removeWhiteSpace(str) {

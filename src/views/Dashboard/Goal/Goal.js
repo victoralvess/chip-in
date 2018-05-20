@@ -67,11 +67,18 @@ export default {
       this.goal.is_open = false
 
       try {
-        await axios.post(`/v1/goals/${this.id}/achieve`, {}, {
+        const response = await axios.post(`/v1/goals/${this.id}/achieve`, {}, {
           headers: {
             'Authorization': `Bearer ${this.$store.getters.jwt}`
           }
         })
+      
+        const { user, jwt: newJwt } = response.data
+        this.user = user
+
+        const { dispatch } = this.$store
+        dispatch('user', user)
+        dispatch('jwt', newJwt)
       } catch (error) {
         const { status } = error.response
         const { $router: r } = this;
