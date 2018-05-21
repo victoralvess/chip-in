@@ -1,8 +1,8 @@
 <template>
   <div>  
     <div class="pr jumbotron d-flex flex-column justify-content-center align-items-center">
-      <div class="wallet">
-        💰 {{user.wallet}}
+      <div class="wallet" v-if="user">
+        💵 {{user.wallet}}
       </div>
       <div class="profile-placeholder"></div>
       <div class="profile-img">
@@ -10,11 +10,6 @@
       </div>      
     </div>
     <div class="container d-flex flex-column">
-      <!--<Card>
-        <CardBody>
-          {{user.username}} | ${{user.wallet}}
-        </CardBody>
-      </Card> -->
       <GoalsList :placeholders="5" :goals="goals"/>
     </div>
   </div>
