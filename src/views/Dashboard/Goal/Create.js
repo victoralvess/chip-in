@@ -11,15 +11,6 @@ import axios from 'axios'
 
 import { handleErrorRedirect } from '@/views/utils'
 
-const defaultForm = {
-  title: ' ',
-  description: ' ',
-  goal: 100,
-  due: new Date().toISOString().substr(0,10)
-}
-
-import { mapState, mapActions } from 'vuex'
-
 export default {
   name: 'create',
   components: {

@@ -66,7 +66,6 @@ const pusherModule =  {
   }
 }
 
-
 const createGoalModuleForm = {
   title: '',
   description: '',
