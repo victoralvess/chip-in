@@ -1,4 +1,6 @@
+import store from '@/store'
 import uniqBy from 'lodash.uniqby'
+import axios from 'axios'
 
 export function addGoal(list = [], goal) {
   if (list.length) {
@@ -18,4 +20,27 @@ export function addGoal(list = [], goal) {
   }
 
   return list
+}
+
+export async function removeSession() {
+  const { dispatch } = store
+  dispatch('user', null)
+  dispatch('jwt', null)
+  try {
+    await axios.get('/sign-out')
+  } catch (e) {}
+}
+
+export async function handleErrorRedirect(code = 500, message = 'Server Error. Try Again Soon.', signOut = false) {
+  if (signOut) {
+    await removeSession()
+  }
+
+  return {
+    name: 'error',
+    params: {
+      code,
+      message
+    }
+  }
 }

@@ -8,6 +8,8 @@ import Input from '@/components/atoms/Input/Input.vue'
 
 import axios from 'axios'
 
+import { handleErrorRedirect } from '@/views/utils'
+
 export default {
   name: 'goal',
   components: {
@@ -50,9 +52,9 @@ export default {
       this.goal = response.data
     } catch (error) {
       const { status } = error.response
-      if (status === 404) return this.$router.push('/404')
-      else if (status === 401) return this.$router.push({ name: 'sign-in', query: { next: this.$route.path } })
-      this.$router.push('/')
+      
+      if (status === 401) return this.$router.push({ name: 'sign-in', query: { next: this.$route.path } })
+      return this.$router.push(await handleErrorRedirect(status, 'Goal Not Found.'))
     }
   },
   beforeDestroy() {
@@ -80,13 +82,11 @@ export default {
         dispatch('user', user)
         dispatch('jwt', newJwt)
       } catch (error) {
-        const { status } = error.response
-        const { $router: r } = this;
-        
+        const { status } = error.response        
         this.goal.is_open = true
 
-        if (status === 401) return r.push('/sign-in')
-        else if (status == 404) return r.push('/404')
+        if (status === 401) return this.$router.push({ name: 'sign-in', query: { next: this.$route.path } })
+        if (status === 404) return this.$router.push(await handleErrorRedirect(status, 'Goal Not Found.'))
 
         r.push('/')
       }
@@ -121,7 +121,7 @@ export default {
     } catch (e) {
       const { status } = e.response
 
-      if (status === 401) return this.$router.push('/sign-in')
+      if (status === 401 || status === 403) return this.$router.push({ name: 'sign-in', query: { next: this.$route.path } })
 
       this.goal = {
         ...this.goal,

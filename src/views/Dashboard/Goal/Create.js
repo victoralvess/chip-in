@@ -9,6 +9,8 @@ import ListGroupItem from '@/components/atoms/ListGroup/Item/Item.vue'
 
 import axios from 'axios'
 
+import { handleErrorRedirect } from '@/views/utils'
+
 const defaultForm = {
   title: ' ',
   description: ' ',
@@ -61,17 +63,17 @@ export default {
         store.dispatch('cleanCreateGoalForm')
       } catch(error) {
         try {
-          const { status, data } = error.response
-          if (status === 401 || status === 403) return this.$router.push({ name: 'sign-in', query: this.$route.path })
-          if (status === 404) {
-            const { dispatch } = this.$store
-            dispatch('user', null)
-            dispatch('jwt', null)
-            return this.$router.push({ name: 'error', params: { code: status, message: data.message } })
+          const { status, data } = error.response       
+          if (status === 401 || status === 403) return this.$router.push({ name: 'sign-in', query: { next: this.$route.path } })
+          if (status === 400) {
+            if (data && data.length)
+              return this.errors = data
+            else
+              return this.$router.push(await handleErrorRedirect(status, 'Sorry. The Request Was Invalid.'))
           }
-          this.errors = data
+          return this.$router.push(await handleErrorRedirect(status, message, (status === 404)))
         } catch (e) {
-          this.errors = [{ message: 'Something went wrong.' }]
+          return this.$router.push(await handleErrorRedirect())
         }
       }
     },

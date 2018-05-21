@@ -2,7 +2,7 @@ import GoalsList from '@/components/compounds/GoalsList/GoalsList.vue'
 import NavigationBar from '@/components/compounds/NavigationBar/NavigationBar.vue'
 
 import axios from 'axios'
-import { addGoal } from '@/views/utils'
+import { addGoal, handleErrorRedirect } from '@/views/utils'
 
 export default {
   name: 'home',
@@ -23,14 +23,10 @@ export default {
       this.goals = response.data
     } catch (error) {
       try {
-        const { status, data: { message } } = error.response
-        
-        if (!message) throw 'Oops'
-
-        return this.$router.push({ name: 'error', params: { code: status, message: message } })
-      } catch (error) {
-        return this.$router.push({ name: 'error', params: { code: 500, message: 'Server Error. Try Again Soon.' } })
-      }
+        const code = error.response.status
+        const message = error.response.data.message || message
+        this.$router.push(await handleErrorRedirect(code, message))
+      } catch (e) {}
     }
   },
   async mounted () {

@@ -1,7 +1,7 @@
 import GoalsList from '@/components/compounds/GoalsList/GoalsList.vue'
 
 import axios from 'axios'
-import { addGoal } from '@/views/utils'
+import { addGoal, handleErrorRedirect } from '@/views/utils'
 
 export default {
   name: 'dashboard',
@@ -57,15 +57,9 @@ export default {
       this.goals = goals
     } catch (error) {
       try {
-        const { status, data: { message } } = error.response
+        const { status, data: { message } } = error.response       
         if (status === 401 || status === 403) return this.$router.push({ name: 'sign-in', query: { next: this.$route.path } })
-        if (status === 404) {
-          const { dispatch } = this.$store
-          dispatch('user', null)
-          dispatch('jwt', null)
-          return this.$router.push({ name: 'error', params: { code: status, message: message } })
-        }
-        if (status === 500) return this.$router.push({ name: 'error', params: { code: status, message: 'Server Error. Try Again Soon.' } })
+        return this.$router.push(await handleErrorRedirect(status, message, (status === 404)))
       } catch (e) {}
       this.$router.push('/')
     }
