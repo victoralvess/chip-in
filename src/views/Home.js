@@ -10,17 +10,31 @@ export default {
     GoalsList,
     NavigationBar
   },
+  computed: {
+    goals: {
+      get () {
+        return this.$store.getters.goals
+      },
+      set (goals) {
+       this.$store.commit('setGoals', goals) 
+      }
+    }
+  },
   data () {
     return {
-      goals: null,
+      //  goals: null,
       channel: null
     }
   },
   async created () {
     try {
       const response = await axios.get('/v1/goals')
+      
+      const goals = response.data
 
-      this.goals = response.data
+      if (JSON.stringify(this.goals) !== JSON.stringify(goals)) {
+        this.goals = goals
+      }
     } catch (error) {
       try {
         const code = error.response.status
@@ -47,7 +61,7 @@ export default {
     this.channel.unbind()
   },
   destroyed () {
-    this.goals = null
+    // this.goals = null
     this.channel = null
   }
 }

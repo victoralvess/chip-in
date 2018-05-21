@@ -100,9 +100,31 @@ export default new Vuex.Store({
   modules: {
     session: sessionModule,
     createGoal: createGoalModule,
-    pusher: pusherModule
+    pusher: pusherModule,
+    goals: {
+      state: {
+        goals: null,
+      },
+      mutations: {
+        setGoals (state, goals) {
+          state.goals = goals
+        }
+      },
+      getters: {
+        goals: state => state.goals,
+        myGoals: (state, getters) => {
+          try {
+            const { id } = getters.user
+            return state.goals.filter(goal => goal.uid === id)
+          } catch (e) {
+            return []
+          }
+        }
+      }
+    }
   },
   plugins: [createPersistedState({
+    paths: ['session', 'createGoal', 'pusher'],
     storage: {
       getItem: key => Cookies.get(key),
       setItem: (key, value) => Cookies.set(key, value, { expires: 1/24 }),

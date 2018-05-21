@@ -8,10 +8,20 @@ export default {
   components: {
     GoalsList
   },
+  computed: {
+    goals: {
+      get () {
+        return this.$store.getters.myGoals
+      },
+      set (goals) {
+        this.$store.commit('setGoals', goals)
+      }
+    }
+  },
   data () {
     return {
       user: null,
-      goals: null,
+      //goals: null,
       channel: null,
     }
   },
@@ -54,7 +64,11 @@ export default {
       })
 
       const goals = response.data
-      this.goals = goals
+
+      if (JSON.stringify(this.goals) !== JSON.stringify(goals)) {
+        console.log('diff')
+        this.goals = goals
+      }
     } catch (error) {
       try {
         const { status, data: { message } } = error.response       
