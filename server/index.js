@@ -15,6 +15,7 @@ const User = require('./models/user');
 
 const verifyToken = require('./utils/verifyToken');
 const verifyUser = require('./utils/verifyUser');
+const { hashPassword } = require('./utils/bcrypt');
 
 const pusher = new Pusher({
   appId: process.env.PUSHER_APP_ID,
@@ -103,9 +104,10 @@ app.post('/sign-up', ensureLoggedOut, async (req, res) => {
   if (password !== confirmPassword) return res.status(400).send({ message: "Passwords don't match." })
 
   try {
+    const hashedPassword = await hashPassword(password);
     await User.create({
       username,
-      password    
+      password: hashedPassword
     });
 
     res.status(201).end();
