@@ -30,7 +30,6 @@ const pusher = new Pusher(PUSHER_APP_KEY, {
 })
 
 const channel = pusher.subscribe(CHANNEL_NAME)
-//const privateChannel = pusher.subscribe(PRIVATE_CHANNEL_NAME)
 
 export default new Vuex.Store({
   state: {
@@ -74,7 +73,6 @@ export default new Vuex.Store({
     createGoalForm: state => state.createGoal.form,
     pusher: _ => pusher,
     channel: _ => channel,
-    //    privateChannel: _ => privateChannel,
     events: _ => EVENTS
   },
   plugins: [createPersistedState({
