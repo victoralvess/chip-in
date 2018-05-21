@@ -50,7 +50,12 @@ app.use(passport.session());
 
 const ensureLoggedIn = (req, res, next) => {
   const { user } = req;
-  if (user) return next();
+  if (user) {
+    if (typeof user === "string") {
+      return res.status(404).send({ message: user });
+    }    
+    return next();
+  }
   return res.status(401).end();
 };
 
@@ -143,7 +148,7 @@ app.get('/v1/users/:uid/goals/', ensureLoggedIn, verifyToken, verifyUser, async 
     
     return res.status(200).json(g);
   } catch (error) {
-    return res.status(404).end();
+    return res.status(500).end();
   }
 
 });

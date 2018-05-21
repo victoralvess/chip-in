@@ -63,6 +63,12 @@ export default {
         try {
           const { status, data } = error.response
           if (status === 401 || status === 403) return this.$router.push({ name: 'sign-in', query: this.$route.path })
+          if (status === 404) {
+            const { dispatch } = this.$store
+            dispatch('user', null)
+            dispatch('jwt', null)
+            return this.$router.push({ name: 'error', params: { code: status, message: data.message } })
+          }
           this.errors = data
         } catch (e) {
           this.errors = [{ message: 'Something went wrong.' }]

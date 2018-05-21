@@ -7,17 +7,21 @@ passport.serializeUser((user, done) => {
   done(null, user.id);
 });
 
-passport.deserializeUser((id, done) => {
-  User.findById(id, (error, user) => {
-    if (error) return done(error);
-    
-    const dUser = {
+passport.deserializeUser(async (id, done) => {
+  try {
+    const user = await User.findById(id); 
+
+    if (!user) return done(null, 'User not found. Please Try Sign in Again.');
+
+
+    done(null, {
       id: user.id,
       username: user.username,
       wallet: user.wallet
-    }
-    done(null, dUser);
-  });
+    });
+  } catch (error) {
+    done(error);
+  }
 });
 
 passport.use(

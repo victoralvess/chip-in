@@ -24,6 +24,9 @@ export default {
     } catch (error) {
       try {
         const { status, data: { message } } = error.response
+        
+        if (!message) throw 'Oops'
+
         return this.$router.push({ name: 'error', params: { code: status, message: message } })
       } catch (error) {
         return this.$router.push({ name: 'error', params: { code: 500, message: 'Server Error. Try Again Soon.' } })
