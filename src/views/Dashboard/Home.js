@@ -1,6 +1,4 @@
 import GoalsList from '@/components/compounds/GoalsList/GoalsList.vue'
-//import Card from '@/components/atoms/Card/Card.vue'
-//import CardBody from '@/components/atoms/Card/Body/Body.vue'
 
 import axios from 'axios'
 import uniqBy from 'lodash.uniqby'
@@ -8,8 +6,6 @@ import uniqBy from 'lodash.uniqby'
 export default {
   name: 'dashboard',
   components: {
-    //Card,
-    //CardBody,
     GoalsList
   },
   data () {
@@ -17,7 +13,6 @@ export default {
       user: null,
       goals: null,
       channel: null,
-      privateChannel: null,
     }
   },
   methods: {
@@ -44,7 +39,6 @@ export default {
   },
   mounted () {
     this.channel = this.$store.getters.channel
-    // this.privateChannel = this.$store.getters.privateChannel
     const { ACHIEVE_EVENT, COLLABORATION_EVENT, CREATED_EVENT, WALLET_UPDATED_EVENT } = this.$store.getters.events
 
     this.channel.bind(ACHIEVE_EVENT, this.handler)
@@ -52,7 +46,7 @@ export default {
     this.channel.bind(WALLET_UPDATED_EVENT, ({ event, uid, value }) => {
       const uidIsEqual = uid === this.user.id
       const uidHaveToBeEqual = event === ACHIEVE_EVENT
-      const match = uidIsEqual === uidHaveToBeEqual// || (!uidEqual)
+      const match = uidIsEqual === uidHaveToBeEqual
 
       if (match) {
         this.user.wallet = value
