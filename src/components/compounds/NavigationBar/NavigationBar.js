@@ -3,6 +3,7 @@ import NavBar from '@/components/atoms/NavBar/NavBar.vue'
 import NavBarNav from '@/components/atoms/NavBar/Nav/Nav.vue'
 
 import { verifyLoggedIn } from '@/utils'
+import { removeSession } from '@/views/utils'
 
 import axios from 'axios'
 
@@ -21,10 +22,7 @@ export default {
   methods: {
     async signOut () {
       try {
-        await axios.get('/sign-out')
-        const { dispatch } = this.$store
-        dispatch('user', null)
-        dispatch('jwt', null)
+        await removeSession()
         this.isLoggedIn = false;
       } catch (error) {}
 

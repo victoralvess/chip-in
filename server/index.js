@@ -251,7 +251,6 @@ app.post('/v1/goals/:id/contribute', ensureLoggedIn, verifyToken, async (req, re
 
   pusher.trigger(CHANNEL_NAME, COLLABORATION_EVENT, {
     goal: goal.formatted,
-    // ...generateUserDataAndJwt(user)
   });
 
   pusher.trigger(CHANNEL_NAME, WALLET_UPDATED_EVENT, {
