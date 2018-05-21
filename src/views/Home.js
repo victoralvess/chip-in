@@ -2,7 +2,7 @@ import GoalsList from '@/components/compounds/GoalsList/GoalsList.vue'
 import NavigationBar from '@/components/compounds/NavigationBar/NavigationBar.vue'
 
 import axios from 'axios'
-import uniqBy from 'lodash.uniqby'
+import { addGoal } from '@/views/utils'
 
 export default {
   name: 'home',
@@ -37,32 +37,11 @@ export default {
 
     this.channel.bind(COLLABORATION_EVENT, this.handler)
     this.channel.bind(ACHIEVE_EVENT, this.handler)
-
-    this.channel.bind(CREATED_EVENT, ({ goal }) => {
-      if (this.goals && this.goals.length)
-        this.goals.push(goal)
-      else
-        this.goals = [ goal ]
-    })    
+    this.channel.bind(CREATED_EVENT, this.handler)    
   },
   methods: {
     handler ({ goal }) {
-      const { id } = goal
-
-      if (this.goals && this.goals.length) {
-        const index = this.goals.findIndex(g => g.id === id)
-        if (index > -1) {
-          this.goals = uniqBy([
-            ...this.goals.slice(0, index),
-            goal,
-            ...this.goals.slice(index + 1)
-          ], 'id')
-        } else {
-          this.goals.push(goal)
-        }
-      } else {
-        this.goals = [ goal ]
-      }
+      this.goals = addGoal(this.goals, goal)
     }
   },
   beforeDestroy () {

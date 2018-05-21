@@ -1,7 +1,7 @@
 import GoalsList from '@/components/compounds/GoalsList/GoalsList.vue'
 
 import axios from 'axios'
-import uniqBy from 'lodash.uniqby'
+import { addGoal } from '@/views/utils'
 
 export default {
   name: 'dashboard',
@@ -17,23 +17,10 @@ export default {
   },
   methods: {
     handler ({ goal }) {
-      const { id, uid } = goal
+      const { uid } = goal
 
-      if (uid === this.user.id) {
-        if (this.goals && this.goals.length) {
-          const index = this.goals.findIndex(g => g.id === id)
-          if (index > -1) {
-            this.goals = uniqBy([
-              ...this.goals.slice(0, index),
-              goal,
-              ...this.goals.slice(index + 1)
-            ], 'id')
-          } else {
-            this.goals.push(goal)
-          }
-        } else {
-          this.goals = [ goal ]
-        }
+      if (this.user.id === uid) {
+        this.goals = addGoal(this.goals, goal)
       }
     }
   },
@@ -43,6 +30,8 @@ export default {
 
     this.channel.bind(ACHIEVE_EVENT, this.handler)
     this.channel.bind(COLLABORATION_EVENT, this.handler)
+    this.channel.bind(CREATED_EVENT, this.handler)
+
     this.channel.bind(WALLET_UPDATED_EVENT, ({ event, uid, value }) => {
       const uidIsEqual = uid === this.user.id
       const uidHaveToBeEqual = event === ACHIEVE_EVENT
@@ -50,16 +39,6 @@ export default {
 
       if (match) {
         this.user.wallet = value
-      }
-    })
-
-    this.channel.bind(CREATED_EVENT, ({ goal }) => {
-      if (this.user.id === goal.uid) {
-        if (this.goals && this.goals.length) {
-          this.goals.push(goal)
-        } else {
-          this.goals = [ goal ]
-        }
       }
     })
   },
