@@ -31,13 +31,10 @@ const pusher = new Pusher(PUSHER_APP_KEY, {
 
 const channel = pusher.subscribe(CHANNEL_NAME)
 
-export default new Vuex.Store({
+const sessionModule = {
   state: {
     user: null,
-    jwt: null,
-    createGoal: {
-      form: {}
-    }
+    jwt: ''
   },
   mutations: {
     user (state, user) {
@@ -45,12 +42,6 @@ export default new Vuex.Store({
     },
     jwt (state, jwt) {
       state.jwt = jwt
-    },
-    saveCreateGoalForm (state, form) {
-      state.createGoal.form = form
-    },
-    cleanCreateGoalForm (state) {
-      state.createGoal.form = {}
     }
   },
   actions: {
@@ -60,20 +51,57 @@ export default new Vuex.Store({
     jwt ({ commit }, jwt) {
       commit('jwt', jwt)
     },
-    saveCreateGoalForm ({ commit }, form) {
-      commit('saveCreateGoalForm', form)
-    },
-    cleanCreateGoalForm ({ commit }) {
-      commit('cleanCreateGoalForm')
-    }
   },
   getters: {
     user: state => state.user,
     jwt: state => state.jwt,
-    createGoalForm: state => state.createGoal.form,
+  }
+}
+
+const pusherModule =  {
+  getters: {
     pusher: _ => pusher,
     channel: _ => channel,
     events: _ => EVENTS
+  }
+}
+
+
+const createGoalModuleForm = {
+  title: '',
+  description: '',
+  goal: 0,
+  due: new Date().toISOString().substr(0, 10)
+}
+
+const createGoalModule = {
+  namespaced: true,
+  state: {
+    form: createGoalModuleForm,
+  },
+  mutations: {
+    saveForm (state, form) {
+      state.form = {
+        ...state.form,
+        ...form
+      }
+    },
+    resetForm (state) {
+      state.form = {
+        ...createGoalModuleForm
+      }
+    }
+  },
+  getters: {
+    form: state => state.form
+  }
+}
+
+export default new Vuex.Store({
+  modules: {
+    session: sessionModule,
+    createGoal: createGoalModule,
+    pusher: pusherModule
   },
   plugins: [createPersistedState({
     storage: {

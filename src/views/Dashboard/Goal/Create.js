@@ -18,6 +18,8 @@ const defaultForm = {
   due: new Date().toISOString().substr(0,10)
 }
 
+import { mapState, mapActions } from 'vuex'
+
 export default {
   name: 'create',
   components: {
@@ -30,24 +32,24 @@ export default {
     ListGroup,
     ListGroupItem
   },
+  computed: {
+    form: {
+      get () {
+        return this.$store.getters['createGoal/form']
+      }
+    },
+  },
   data() {
     return {
-      form: { ...defaultForm },
       errors: [],
       feedback: null
-    }
-  },
-  created() {
-    this.form = {
-      ...defaultForm,
-      ...this.$store.getters.createGoalForm
     }
   },
   methods: {
     async createGoal() {
       const store = this.$store
 
-      store.dispatch('saveCreateGoalForm', this.form)
+      store.commit('createGoal/saveForm', this.form)
       try {
         const response = await axios.post('/v1/goals/add', JSON.stringify(this.form), {
           headers: {
@@ -59,8 +61,7 @@ export default {
         this.feedback = 'Goal created.'
         this.errors = []
         setTimeout(_ => this.feedback = null, 5000)
-        this.form = { ...defaultForm }
-        store.dispatch('cleanCreateGoalForm')
+        store.commit('createGoal/resetForm')
       } catch(error) {
         try {
           const { status, data } = error.response       
@@ -78,14 +79,13 @@ export default {
       }
     },
     clean() {
-      this.form = { ...defaultForm }
       this.feedback = null;
       this.errors = [];
-      this.$store.dispatch('cleanCreateGoalForm')
+      this.$store.commit('createGoal/resetForm')
     }
   },
   beforeRouteLeave (to, from, next) {
-    this.$store.dispatch('saveCreateGoalForm', this.form)
+    this.$store.commit('createGoal/saveForm', this.form)
     next()
   }
 }

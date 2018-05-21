@@ -34,7 +34,7 @@
               <Input type="date" name="due" id="due" :min="new Date().toISOString().substr(0,10)" v-model="form.due" required/>
             </div>
             <div class="d-flex justify-content-space-between">
-              <Button type="reset" class="btn-danger" :click="clean">Clean</Button>
+              <Button type="button" class="btn-danger" :click="clean">Clean</Button>
               <Button type="submit" class="btn-primary">Create Goal</Button>
             </div>
           </Form>
