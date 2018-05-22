@@ -68,7 +68,7 @@ export default {
     },
     toggleClass (href) {
       document.querySelectorAll(`.filter-group > a`).forEach(el => el.classList.toggle('filter', false))
-      document.querySelector(`.filter-group > a[href="#/#${href}"]`).classList.toggle('filter', true)
+      document.querySelector(`.filter-group > .${href}`).classList.toggle('filter', true)
     },
     closed () {
       this.toggleClass('closed')

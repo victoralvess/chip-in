@@ -2,9 +2,9 @@
   <div>
     <NavigationBar />
     <div class="container filter-group">
-      <a href="#/#closed" class="no-decoration button no-right" role="button" @click="closed">Closed</a>
-      <a href="#/#active" class="no-decoration button no-borders" role="button" @click="active">Active</a>
-      <a href="#/#all" class="no-decoration button no-left filter" role="button" @click="all">All</a>
+      <a class="closed no-decoration button no-right" role="button" @click="closed">Closed</a>
+      <a class="active no-decoration button no-borders" role="button" @click="active">Active</a>
+      <a class="all no-decoration button no-left filter" role="button" @click="all">All</a>
     </div>
     <div class="container mt-40 center-child">
       <GoalsList :placeholders="12" :goals="goalsList"/>
