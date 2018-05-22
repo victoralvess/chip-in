@@ -5,7 +5,6 @@
   "scripts": {
     "start-server": "nodemon server/index.js -w server",
     "serve": "vue-cli-service serve",
-    "prebuild": "npm rebuild node-sass --silent --force",
     "build": "vue-cli-service build",
     "postbuild": "yarn purify && bash -c 'echo | cat dist/css/chipin.css > dist/css/app*'",
     "purify": "purifycss dist/css/app.*.css dist/js/*.*.js dist/*.*.*.js --min --info --out dist/css/chipin.css",
