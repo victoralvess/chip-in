@@ -19,7 +19,7 @@
         <ListGroupItem v-for="goal of goals" :key="goal.id">
         <div :class="{ status: true, open: goal.is_open && !goal.expired, 'need-save-money': user && goal.uid === user.id && goal.is_open && goal.expired }"></div>
           <div>
-            <router-link :to="{ name: 'goal', params: { id: goal.id } }">{{goal.title}}</router-link>
+            <router-link :to="{ name: 'goal', params: { id: goal.id } }" class="wrap">{{goal.title}}</router-link>
             <ProgressBar :value="goal.progress"/>
           </div>
         </ListGroupItem>
@@ -29,6 +29,10 @@
 </template>
 
 <style scoped>
+.wrap {
+  word-break: break-word;
+}
+
 .not-found-icon {
   height: 150px;
   width: 150px;
