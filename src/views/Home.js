@@ -8,7 +8,7 @@ export default {
   name: 'home',
   components: {
     GoalsList,
-    NavigationBar
+    NavigationBar,
   },
   computed: {
     goals: {
@@ -18,15 +18,23 @@ export default {
       set (goals) {
        this.$store.commit('setGoals', goals) 
       }
-    }
+    },
+    closedGoals () {
+      return this.$store.getters.closedGoals
+    },
+    activeGoals () {
+      return this.$store.getters.activeGoals
+    },
   },
   data () {
     return {
-      //  goals: null,
+      goalsList: null,
       channel: null
     }
   },
   async created () {
+    this.goalsList = this.goals
+
     try {
       const response = await axios.get('/v1/goals')
       
@@ -34,7 +42,9 @@ export default {
 
       if (JSON.stringify(this.goals) !== JSON.stringify(goals)) {
         this.goals = goals
+        this.goalsList = this.goals
       }
+
     } catch (error) {
       try {
         const code = error.response.status
@@ -55,6 +65,22 @@ export default {
   methods: {
     handler ({ goal }) {
       this.goals = addGoal(this.goals, goal)
+    },
+    toggleClass (href) {
+      document.querySelectorAll(`.filter-group > a`).forEach(el => el.classList.toggle('filter', false))
+      document.querySelector(`.filter-group > a[href="#/#${href}"]`).classList.toggle('filter', true)
+    },
+    closed () {
+      this.toggleClass('closed')
+      this.goalsList = this.closedGoals
+    },
+    active () {
+      this.toggleClass('active')
+      this.goalsList = this.activeGoals
+    },
+    all () {
+      this.toggleClass('all')
+      this.goalsList = this.goals
     }
   },
   beforeDestroy () {

@@ -112,10 +112,24 @@ export default new Vuex.Store({
       },
       getters: {
         goals: state => state.goals,
-        myGoals: (state, getters) => {
+        myGoals: ({ goals }, getters) => {
           try {
             const { id } = getters.user
-            return state.goals.filter(goal => goal.uid === id)
+            return goals.filter(goal => goal.uid === id)
+          } catch (e) {
+            return []
+          }
+        },
+        closedGoals: ({ goals }) => {
+          try {
+            return goals.filter(goal => !goal.is_open || goal.expired)
+          } catch (e) {
+            return []
+          }
+        },
+        activeGoals: ({ goals }) => {
+          try {
+            return goals.filter(goal => goal.is_open && !goal.expired)
           } catch (e) {
             return []
           }
