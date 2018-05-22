@@ -6,7 +6,7 @@
     <Card>
       <CardBody>
        <div class="alert alert-danger" v-if="error">{{error}}</div>
-       <Form class="d-flex flex-column" :submitHandler="signUp">
+       <Form class="d-flex flex-column" :submitHandler="signUp" autocomplete="nope">
          <div class="form-group">
            <Label for="username" label="Username"/>
            <Input type="text" id="username" name="username" v-model="username" minlength="4"/>
