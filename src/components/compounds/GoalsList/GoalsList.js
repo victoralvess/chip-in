@@ -4,11 +4,6 @@ import ListGroupItem from '@/components/atoms/ListGroup/Item/Item.vue'
 import ProgressBar from '@/components/atoms/ProgressBar/ProgressBar.vue'
 
 export default {
-  data () {
-    return {
-      user: null
-    }
-  },
   components: {
     LinePlaceholder,
     ListGroup,
@@ -24,7 +19,9 @@ export default {
       default: 1
     }
   },
-  created () {
-    this.user = this.$store.getters.user;
+  computed: {
+    user () {
+      return this.$store.getters.user
+    }
   }
 }
