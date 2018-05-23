@@ -7,18 +7,18 @@
   </Placeholder>
 </template>
 
-<style lang="scss" scoped>
+<style scoped>
 .line-placeholder {
   max-width: 200px;
   height: 13px;
   margin: 5px;
   animation: pulse 1s infinite ease-in-out;
   border-radius: 3px;
+}
 
-  &--large {
-    max-width: 95%;
-    height: 15px;
-  }
+.large {
+  max-width: 95%;
+  height: 15px;
 }
 </style>
 
