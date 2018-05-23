@@ -39,7 +39,7 @@
 }
 
 .icon-credit {
-  position: absolute;
+  position: fixed;
   bottom: 2px;
   left: 2px;
 }
