@@ -37,8 +37,8 @@
 
 .go-to-home-link {
   position: absolute;
-  top: 80px;
-  left: 50px;
+  top: 20px;
+  left: 30px;
 }
 </style>
 
