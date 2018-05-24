@@ -9,7 +9,7 @@ This app will be sent to the [dev.to contest](https://dev.to/devteam/first-ever-
 
 ## What is this app
 
-[Chip in](https://link-to-chip-in) is an app that lets the user sets up life goals (e.g., travel to another country) and then he/she can receive money from other users.
+[Chip in](https://chipin.now.sh) is an app that lets the user sets up life goals (e.g., travel to another country) and then he/she can receive money from other users.
 
 *PS: There aren't real money transactions.*
 
@@ -36,3 +36,4 @@ This app will be sent to the [dev.to contest](https://dev.to/devteam/first-ever-
 
 * I'm using [now](https://zeit.co/now) for hosting the app.
 * I'm using [mLab](https://mlab.com) for hosting the database.
+* I'm using [Flat Icon's](https://www.flaticon.com/) icons.
