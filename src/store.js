@@ -86,9 +86,7 @@ const createGoalModule = {
       }
     },
     resetForm (state) {
-      state.form = {
-        ...createGoalModuleForm
-      }
+      state.form = createGoalModuleForm
     }
   },
   getters: {

@@ -48,11 +48,11 @@ export default {
             'Authorization': `Bearer ${store.getters.jwt}`
           }
         })
+        store.commit('createGoal/resetForm')
 
         this.feedback = 'Goal created.'
         this.errors = []
-        setTimeout(_ => this.feedback = null, 5000)
-        store.commit('createGoal/resetForm')
+        setTimeout(_ => this.feedback = null, 5000)        
       } catch(error) {
         try {
           const { status, data } = error.response       
