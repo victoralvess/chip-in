@@ -16,7 +16,7 @@
   border-radius: 3px;
 }
 
-.large {
+.line-placeholder--large {
   max-width: 95%;
   height: 15px;
 }
