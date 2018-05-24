@@ -20,11 +20,6 @@ This app will be sent to the [dev.to contest](https://dev.to/devteam/first-ever-
 * Passport
 * MongoDB
 
-## Additional info
-
-* I'm using [now](https://zeit.co/now) for hosting the app.
-* I'm using [mLab](https://mlab.com) for hosting the database.
-
 ## How to run
 
 *You will need 2 terminals.*
@@ -36,3 +31,8 @@ This app will be sent to the [dev.to contest](https://dev.to/devteam/first-ever-
 *PS: You will need set up a MongoDB*
 
 *PS²: You will need set up the Pusher Channels API*
+
+## Additional info
+
+* I'm using [now](https://zeit.co/now) for hosting the app.
+* I'm using [mLab](https://mlab.com) for hosting the database.
